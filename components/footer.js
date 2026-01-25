@@ -15,7 +15,7 @@ function renderFooter(rootPath) {
                 </span>
                 <br>
                 <span style="color: var(--text-secondary); font-size: 0.8rem; opacity: 0.6;">
-                    Built with <span style="color: var(--accent-color)">Python</span> & Coffee
+                    Built with <span style="color: var(--accent-color)">Gemini</span>, Python, and a lot of Coffee
                 </span>
             </div>
 

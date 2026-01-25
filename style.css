@@ -263,15 +263,24 @@ nav {
     }
 
     .resume-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .skills-sidebar {
+        order: 2;
         position: static;
-        margin-bottom: var(--spacing-lg);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: var(--spacing-md);
+        margin-top: var(--spacing-xl);
+        border-bottom: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: var(--spacing-md);
     }
+
+    .experience-timeline {
+        order: 1;
+    }
+
+
 
     .contact-grid {
         grid-template-columns: 1fr;
@@ -746,4 +755,33 @@ strong {
     height: auto;
     border-radius: 4px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Mobile Override for Resume Section (Must be last to override desktop grid) */
+@media (max-width: 768px) {
+    .resume-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: var(--spacing-lg);
+    }
+
+    .skills-sidebar {
+        order: 2;
+        width: 100%;
+        position: static;
+        margin-top: var(--spacing-xl);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: var(--spacing-md);
+        border-bottom: none;
+    }
+
+    .experience-timeline {
+        order: 1;
+        width: 100%;
+    }
+
+    /* Adjust Timeline Padding for Mobile */
+    .timeline-item {
+        padding-left: var(--spacing-lg);
+    }
 }

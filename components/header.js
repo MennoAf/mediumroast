@@ -17,7 +17,7 @@ function renderHeader(rootPath) {
         <div class="container">
             <nav>
                 <div class="logo">
-                     <a href="${getPath('index.html')}" style="color: inherit;"><span style="color: var(--accent-color)">></span> jason_bauman</a>
+                     <a href="${getPath('index.html')}" style="color: inherit;"><span style="color: var(--accent-color)">></span> _mediumroast</a>
                 </div>
                 <button class="mobile-menu-btn" aria-label="Toggle Menu">
                     ☰
