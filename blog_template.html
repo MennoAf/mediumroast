@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="description" content="{{meta}}">
+    <link rel="canonical" href="{{url}}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+    <script src="../components/header.js"></script>
+    <script>renderHeader('..');</script>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-article">
+                <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+
+                <h1 class="article-title">{{title}}</h1>
+                <div class="post-meta">
+                    <span class="post-date">{{date}}</span>
+                    <span class="post-tags">{{tags}}</span>
+                </div>
+
+                <div class="article-content">
+                    {{content}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+<div id="site-footer"></div><script src="../components/footer.js"></script><script>renderFooter("..");</script></body>
+
+</html>

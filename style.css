@@ -37,6 +37,9 @@ body {
     font-family: var(--font-body);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 h1,
@@ -593,3 +596,154 @@ strong {
 }
 
 /* Red for error class */
+
+/* Blog Page */
+.blog-section {
+    padding: var(--spacing-xl) 0;
+    min-height: calc(100vh - 80px);
+}
+
+.blog-list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Markdown Callout Style */
+.blog-post {
+    background: var(--card-bg);
+    border-left: 5px solid var(--accent-color);
+    padding: var(--spacing-lg);
+    border-radius: 0 4px 4px 0;
+    /* Rounded corners only on right */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.blog-post:hover {
+    transform: translateX(5px);
+}
+
+.blog-post h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.post-meta {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.post-date {
+    opacity: 0.8;
+}
+
+.post-tags {
+    color: var(--accent-color);
+    background: rgba(76, 201, 240, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.post-content {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.post-content p {
+    margin-bottom: var(--spacing-md);
+}
+
+.read-more {
+    display: inline-block;
+    margin-top: var(--spacing-sm);
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-family: var(--font-heading);
+    font-weight: bold;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+.post-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Single Blog Article */
+.blog-article {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    /* Optional: match card bg or keep transparent */
+    padding: var(--spacing-xl);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: var(--spacing-lg);
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-family: var(--font-heading);
+}
+
+.article-title {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.2;
+}
+
+.article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-lg);
+}
+
+.article-content h3 {
+    color: var(--text-primary);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.5rem;
+}
+
+.article-content ul {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-lg);
+    list-style: disc;
+}
+
+.article-content li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.article-content pre {
+    background: #1e1e1e;
+    padding: var(--spacing-md);
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: var(--spacing-md) 0;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.article-content img {
+    max-width: 80%;
+    display: block;
+    margin: 20px auto;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}

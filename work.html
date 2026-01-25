@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work | Jason Bauman</title>
+    <title>Work | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,26 +19,9 @@
 
 <body>
 
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <a href="index.html" style="color: inherit;"><span style="color: var(--accent-color)">></span>
-                        jason_bauman</a>
-                </div>
-                <button class="mobile-menu-btn"
-                    onclick="document.querySelector('.nav-links').classList.toggle('active')">
-                    ☰
-                </button>
-                <div class="nav-links">
-                    <a href="work.html" class="active">Work</a>
-                    <a href="about.html">About</a>
-                    <a href="#blog">Blog</a>
-                    <a href="contact.html">Contact</a>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <div id="site-header"></div>
+    <script src="components/header.js"></script>
+    <script>renderHeader('.');</script>
 
     <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
 
@@ -63,6 +47,6 @@
         </div>
     </section>
 
-</body>
+<div id="site-footer"></div><script src="components/footer.js"></script><script>renderFooter(".");</script></body>
 
 </html>

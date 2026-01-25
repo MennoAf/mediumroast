@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .error-container {
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .error-svg {
+            width: 256px;
+            height: 256px;
+            margin-bottom: 2rem;
+            animation: shake 2s infinite ease-in-out paused;
+            /* Optional interaction */
+        }
+
+        .error-svg:hover {
+            animation-play-state: running;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .home-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .home-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        @keyframes shake {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(5deg);
+            }
+
+            75% {
+                transform: rotate(-5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="error-container">
+        <!-- Broken/Empty Cup SVG -->
+        <svg class="error-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+            <!-- Cup: Plasma Blue #4cc9f0 -->
+            <g transform="translate(96, 128)">
+                <!-- Cup Body -->
+                <path
+                    d="M32,0 H288 A16,16 0 0 1 304,16 V144 A144,144 0 0 1 160,288 H160 A144,144 0 0 1 16,144 V16 A16,16 0 0 1 32,0 Z"
+                    fill="none" stroke="#4cc9f0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+                <!-- Removed Liquid -->
+
+                <!-- Handle -->
+                <path d="M304,64 H320 A64,64 0 0 1 384,128 V128 A64,64 0 0 1 320,192 H304" fill="none" stroke="#4cc9f0"
+                    stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+                <!-- Crack -->
+                <path d="M100,20 L130,80 L110,140 L150,220" fill="none" stroke="#4cc9f0" stroke-width="12"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+
+            <!-- No Steam (It's cold/empty) -->
+        </svg>
+
+        <h1>Looks like you need a refill</h1>
+        <p>This page is empty.</p>
+
+        <a href="index.html" class="home-btn">Take me home</a>
+    </div>
+
+</body>
+
+</html>

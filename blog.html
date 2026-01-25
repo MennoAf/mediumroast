@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+    <script src="components/header.js"></script>
+    <script>renderHeader('.');</script>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-list" id="blog-container">
+                <!-- Posts will be loaded here dynamically -->
+                <p style="text-align: center; color: var(--text-secondary);">Loading posts...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Blog Loader -->
+    <!-- Load data file as a script variable to avoid CORS on local file:// execution -->
+    <script src="blog_posts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById('blog-container');
+
+            // Data is loaded from blog_posts.js into window.BLOG_POSTS
+            const posts = window.BLOG_POSTS || [];
+
+            container.innerHTML = ''; // Clear loading message
+
+            if (posts.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No posts found.</p>';
+                return;
+            }
+
+            posts.forEach(post => {
+                const article = document.createElement('article');
+                article.className = 'blog-post';
+                article.setAttribute('data-date', post.iso_date);
+
+                // Create HTML structure for the post
+                article.innerHTML = `
+                    <h2><a href="blog/${post.filename}" style="color: inherit;">${post.title}</a></h2>
+                    <div class="post-meta">
+                        <span class="post-date">${post.date}</span>
+                        <span class="post-tags">${post.tags}</span>
+                    </div>
+                    <div class="post-content">
+                        <p>${post.summary}</p>
+                        <a href="blog/${post.filename}" class="read-more">Read Article &rarr;</a>
+                    </div>
+                `;
+
+                container.appendChild(article);
+            });
+        });
+    </script>
+    </div>
+    </section>
+
+<div id="site-footer"></div><script src="components/footer.js"></script><script>renderFooter(".");</script></body>
+
+</html>

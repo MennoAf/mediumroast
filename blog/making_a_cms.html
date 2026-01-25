@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making a CMS | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="description" content="Education and Promotion in a single package">
+    <link rel="canonical" href="https://mediumroast.dev/blog/making_a_cms.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+    <script src="../components/header.js"></script>
+    <script>renderHeader('..');</script>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-article">
+                <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+
+                <h1 class="article-title">Making a CMS</h1>
+                <div class="post-meta">
+                    <span class="post-date">January 25, 2026</span>
+                    <span class="post-tags">#cms #python #webdev</span>
+                </div>
+
+                <div class="article-content">
+                    <h1>Making a CMS</h1>
+<p>I was recently watching a video about vibecoding where they said that you really needed to use a model for a year before you got to the point where you could trust it. </p>
+<p>Of course, I haven't been vibecoding for a year, but I want to get better at it. </p>
+<p>Also, like basically everyone else in my field, I had the idea of making a personal website where I could put information about my work, my work history, and then have a blog that wasn't owned by the corporate overlords. </p>
+<p>So I decided to make a CMS for my blog. </p>
+<h2>Defining Insanity</h2>
+<p>But WHY you might ask? Wordpress is right there!</p>
+<p>Sure, it is, but Wordpress has a lot of drama I don't want to deal with. I also want something that is lightweight and simple. </p>
+<p>In fact, if I could create something that uses Markdown for writing, that would be perfect. </p>
+<p>Yes, I am aware of Hugo. </p>
+<p>The problem with Hugo is that it has a lot of templates to configure and I quickly got lost in trying to pick the perfect theme but none of them felt right. So if I can't find the perfect theme, why not try and create something from my own?</p>
+<h2>Defying Gravity</h2>
+<p>This blog is the output of one snowy afternoon, Google's Antigravity platform, and a lot of coffee. </p>
+<p>Antigravity is an IDE that lets you interact with agents (Mostly Gemini 3) and built whatever you prompt. </p>
+<p>The tool is actually pretty cool, but every time I've used it in the past I ended up creating proof of concept web apps that I run locally so I wanted to see if I could build something. </p>
+<h2>The Process</h2>
+<p>I started with the homepage. I wanted something that would be simple, but still show that at my core, I really am embracing the developer mindset.</p>
+<p>I also knew that I wanted to use (mostly) HTML and CSS for the front end and then Python for the back end because It was what I was most familiar with. </p>
+<p>Once I had something that I liked for the homepage, I moved onto the other main pages. My About page is just a resume (I will be adjusting this later) while my "Work" is still a work in progress because I am not sure how I want to show off stuff there yet. </p>
+<h2>Making the Blog</h2>
+<p>The blog was the hardest part of this project, but the most fun. I wanted to create a system that would allow me to write in markdown (like now) but then convert everything to a static HTML page AND have a blogroll that users could scroll through that looked like fancy cards. </p>
+<p>This is where the python came in. How it works right now is like this:</p>
+<ul>
+<li>I write in markdown in a specific drafts folder. this folder is part of the .gitignore locally so that it won't get shared before I am ready.</li>
+<li>When I am ready to publish, I tag the frontmatter with <code>published: True</code> and then run the publish.py script.</li>
+<li>The publish script will then convert the markdown to HTML and then move it to the blog folder.</li>
+<li>Then, I have another script that will update the blog_posts.js file with the new post. This is how the Blogroll is populated.</li>
+<li>Finally, the last script will publish the changes to GitHub which should push my content to Cloudflare where you can see it. This is the last stage I have to verify wish me luck. </li>
+</ul>
+<blockquote>
+<p>But Isn't this just reinventing the wheel?</p>
+</blockquote>
+<p>Yes, yes it is. </p>
+<p>If I just wanted a website, I could use a CMS like Wordpress or even a static site generator like Hugo. </p>
+<p>But I want to learn. I need to be more comfortable with how Agents work so that I know how to instruct them in the future. This isn't Yegge's Gastown, but I am pretty Damn proud of it.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<div id="site-footer"></div><script src="../components/footer.js"></script><script>renderFooter("..");</script></body>
+
+</html>
