@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Jason Bauman</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <a href="index.html" style="color: inherit;"><span style="color: var(--accent-color)">></span>
+                        jason_bauman</a>
+                </div>
+                <button class="mobile-menu-btn"
+                    onclick="document.querySelector('.nav-links').classList.toggle('active')">
+                    ☰
+                </button>
+                <div class="nav-links">
+                    <a href="work.html">Work</a>
+                    <a href="about.html" class="active">About</a>
+                    <a href="#blog">Blog</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section id="work" class="resume-section" style="padding-top: 50px;">
+        <div class="container">
+            <div class="resume-grid">
+
+                <!-- Sticky Left Sidebar: Skills Matrix -->
+                <aside class="skills-sidebar">
+                    <div class="skills-category">
+                        <h3>SEO & Analytics</h3>
+                        <ul class="skills-list">
+                            <li>Technical SEO Audits</li>
+                            <li>Google Search Console</li>
+                            <li>GA4 (BigQuery Export)</li>
+                            <li>Screaming Frog</li>
+                            <li>Ahrefs / SEMRush</li>
+                            <li>Looker Studio</li>
+                        </ul>
+                    </div>
+
+                    <div class="skills-category">
+                        <h3>Engineering</h3>
+                        <ul class="skills-list">
+                            <li>Python & PySpark</li>
+                            <li>SQL / BigQuery</li>
+                            <li>Databricks / Snowflake</li>
+                            <li>Android (Kotlin/Java)</li>
+                        </ul>
+                    </div>
+
+                    <div class="skills-category">
+                        <h3>AI & Innovation</h3>
+                        <ul class="skills-list">
+                            <li>LLM Implementation</li>
+                            <li>AI Keyword Categorization</li>
+                            <li>Auto Funnel Analysis</li>
+                            <li>ML for Search Intent</li>
+                        </ul>
+                    </div>
+
+                    <div class="skills-category">
+                        <h3>Leadership</h3>
+                        <ul class="skills-list">
+                            <li>Cross-functional Strategy</li>
+                            <li>Team Management</li>
+                            <li>DEI Mentorship</li>
+                            <li>Portfolio Growth</li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Right Column: Timeline & Experience -->
+                <div class="experience-timeline">
+
+                    <div class="summary-card">
+                        <h2 class="section-title"
+                            style="font-size: 1.5rem; border: none; padding: 0; margin-bottom: 10px;">Professional
+                            Summary</h2>
+                        <p style="color: var(--text-secondary)">
+                            Strategic <strong>Director of Technical Strategy</strong> with a specialized focus on
+                            technical SEO, data engineering, and the integration of AI-driven solutions. Expert at
+                            leveraging <strong>Python, PySpark, and cloud data environments</strong> to build scalable
+                            search architectures. Committed to leading organizations through the AI era.
+                        </p>
+                    </div>
+
+                    <h2 class="section-title">Experience</h2>
+
+                    <!-- Publicis Health Media: Director -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h3 class="timeline-role">Director, Technical Strategy</h3>
+                            <div class="timeline-company">Publicis Health Media | Philadelphia, PA</div>
+                            <span class="timeline-date">Late 2025 – Present</span>
+                        </div>
+                        <div class="timeline-content">
+                            <ul>
+                                <li>Architecting roadmap to integrate AI/ML into organic search strategies.</li>
+                                <li>Developing custom Python tools & PySpark pipelines in Databricks for automated
+                                    analysis.</li>
+                                <li>Leading transition to AI-first search environments & automated funnel optimization.
+                                </li>
+                                <li>Engineered sophisticated integrations (GSC + GA4) for predictive insights.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Publicis Health Media: Associate Director -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h3 class="timeline-role">Associate Director, Technical SEO</h3>
+                            <div class="timeline-company">Publicis Health Media</div>
+                            <span class="timeline-date">July 2019 – Late 2025</span>
+                        </div>
+                        <div class="timeline-content">
+                            <ul>
+                                <li>Technical lead for 94+ domains, optimized architecture & Core Web Vitals.</li>
+                                <li>Achieved <strong>31% increase in organic traffic</strong> across portfolio in 6
+                                    months.</li>
+                                <li>Reduced average CPC by 55% via technical speed optimizations.</li>
+                                <li>Reduced CAC by over <strong>75%</strong> (from $200 to <$50).< /li>
+                                <li>Managed direct reports & contributed to DEI council.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Console And Associates -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h3 class="timeline-role">SEO Specialist</h3>
+                            <div class="timeline-company">Console And Associates | Marlton, NJ</div>
+                            <span class="timeline-date">November 2017 – June 2019</span>
+                        </div>
+                        <div class="timeline-content">
+                            <ul>
+                                <li>Created automated reporting framework for KPI visualization.</li>
+                                <li>Increased organic visibility & boosted leads by <strong>20% YoY</strong>.</li>
+                                <li>Managed internal/external teams during rebranding.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Trinity Insight -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h3 class="timeline-role">Senior SEO Associate</h3>
+                            <div class="timeline-company">Trinity Insight | Philadelphia, PA</div>
+                            <span class="timeline-date">August 2014 – November 2017</span>
+                        </div>
+                        <div class="timeline-content">
+                            <ul>
+                                <li>Primary specialist for retail & financial clients executing onsite/offsite SEO.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2 class="section-title">Education</h2>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h3 class="timeline-role">Bachelor of Science in Marketing</h3>
+                            <div class="timeline-company">Indiana Wesleyan University</div>
+                            <span class="timeline-date">Minor in Writing</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work | Jason Bauman</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <a href="index.html" style="color: inherit;"><span style="color: var(--accent-color)">></span>
+                        jason_bauman</a>
+                </div>
+                <button class="mobile-menu-btn"
+                    onclick="document.querySelector('.nav-links').classList.toggle('active')">
+                    ☰
+                </button>
+                <div class="nav-links">
+                    <a href="work.html" class="active">Work</a>
+                    <a href="about.html">About</a>
+                    <a href="#blog">Blog</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="code-section">
+        <div class="container">
+            <div class="code-editor">
+                <div class="editor-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="filename">work_in_progress.py</span>
+                </div>
+                <div class="editor-content">
+                    <pre><code class="language-python"><span class="keyword">try</span>:
+    <span class="function">display_projects</span>()
+<span class="keyword">except</span> <span class="error">ConstructionError</span>:
+    <span class="comment"># Something Cool Will Go here</span>
+    <span class="comment"># Check back soon...</span>
+    <span class="keyword">pass</span>
+</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
