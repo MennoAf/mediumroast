@@ -1,8 +1,5 @@
 
 blog_ideas/
 blog_template.html
-deploy.py
 drafts/
-generate_manifest.py
-publish.py
 __pycache__

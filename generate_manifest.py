@@ -9,9 +9,30 @@ def parse_post(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
+    # Helper to strip HTML tags
+    from html.parser import HTMLParser
+    
+    class MLStripper(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.reset()
+            self.strict = False
+            self.convert_charrefs = True
+            self.text = []
+        def handle_data(self, d):
+            self.text.append(d)
+        def get_data(self):
+            return "".join(self.text)
+
+    def strip_tags(html):
+        s = MLStripper()
+        s.feed(html)
+        return s.get_data()
+
     # Extract Title
     title_match = re.search(r'<h1 class="article-title">(.*?)</h1>', content)
-    title = title_match.group(1) if title_match else "Untitled"
+    raw_title = title_match.group(1) if title_match else "Untitled"
+    title = strip_tags(raw_title)
 
     # Extract Date
     date_match = re.search(r'<span class="post-date">(.*?)</span>', content)
@@ -26,15 +47,16 @@ def parse_post(filepath):
 
     # Extract Tags
     tags_match = re.search(r'<span class="post-tags">(.*?)</span>', content)
-    tags = tags_match.group(1) if tags_match else ""
+    raw_tags = tags_match.group(1) if tags_match else ""
+    tags = strip_tags(raw_tags)
 
     # Extract Summary (First paragraph in article-content)
     # Search for the first <p> tag anywhere after <div class="article-content">
     summary_match = re.search(r'<div class="article-content">.*?<p>(.*?)</p>', content, re.DOTALL)
-    summary = summary_match.group(1) if summary_match else ""
+    raw_summary = summary_match.group(1) if summary_match else ""
     
-    # Clean up summary (remove any internal tags if present, simple clean)
-    summary = re.sub(r'<[^>]+>', '', summary)
+    # Clean up summary
+    summary = strip_tags(raw_summary)
 
     return {
         "title": title,
