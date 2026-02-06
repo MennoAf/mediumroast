@@ -15,6 +15,9 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- Analytics -->
+    <script defer data-domain="mediumroast.dev" src="https://plausible.io/js/script.js"></script>
 </head>
 
 <body>
@@ -27,6 +30,11 @@
 
     <section class="blog-section">
         <div class="container">
+            <!-- Tag Filters -->
+            <div class="tag-filters" id="tag-filters">
+                <!-- Filters will be populated dynamically -->
+            </div>
+
             <div class="blog-list" id="blog-container">
                 <!-- Posts will be loaded here dynamically -->
                 <p style="text-align: center; color: var(--text-secondary);">Loading posts...</p>
@@ -40,6 +48,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const container = document.getElementById('blog-container');
+            const filtersContainer = document.getElementById('tag-filters');
 
             // Data is loaded from blog_posts.js into window.BLOG_POSTS
             const posts = window.BLOG_POSTS || [];
@@ -51,31 +60,81 @@
                 return;
             }
 
+            // Extract unique tags
+            const allTags = new Set();
             posts.forEach(post => {
-                const article = document.createElement('article');
-                article.className = 'blog-post';
-                article.setAttribute('data-date', post.iso_date);
-
-                // Create HTML structure for the post
-                article.innerHTML = `
-                    <h2><a href="blog/${post.filename}" style="color: inherit;">${post.title}</a></h2>
-                    <div class="post-meta">
-                        <span class="post-date">${post.date}</span>
-                        <span class="post-tags">${post.tags}</span>
-                    </div>
-                    <div class="post-content">
-                        <p>${post.summary}</p>
-                        <a href="blog/${post.filename}" class="read-more">Read Article &rarr;</a>
-                    </div>
-                `;
-
-                container.appendChild(article);
+                if (post.tags) {
+                    // Split tags by spaces and hashtags
+                    const tags = post.tags.split(/\s+/).filter(tag => tag.startsWith('#'));
+                    tags.forEach(tag => allTags.add(tag));
+                }
             });
+
+            // Create filter buttons
+            if (allTags.size > 0) {
+                const filterHTML = '<button class="tag-filter active" data-tag="all">All</button>' +
+                    Array.from(allTags).map(tag =>
+                        `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
+                    ).join('');
+                filtersContainer.innerHTML = filterHTML;
+
+                // Add click handlers
+                document.querySelectorAll('.tag-filter').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        // Update active state
+                        document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+
+                        const selectedTag = this.getAttribute('data-tag');
+                        filterPosts(selectedTag);
+                    });
+                });
+            }
+
+            function renderPosts(postsToRender) {
+                container.innerHTML = '';
+                postsToRender.forEach(post => {
+                    const article = document.createElement('article');
+                    article.className = 'blog-post';
+                    article.setAttribute('data-date', post.iso_date);
+
+                    // Create HTML structure for the post
+                    article.innerHTML = `
+                        <h2><a href="blog/${post.filename}" style="color: inherit;">${post.title}</a></h2>
+                        <div class="post-meta">
+                            <span class="post-date">${post.date}</span>
+                            <span class="post-reading-time">${post.reading_time} min read</span>
+                            <span class="post-tags">${post.tags}</span>
+                        </div>
+                        <div class="post-content">
+                            <p>${post.summary}</p>
+                            <a href="blog/${post.filename}" class="read-more">Read Article &rarr;</a>
+                        </div>
+                    `;
+
+                    container.appendChild(article);
+                });
+            }
+
+            function filterPosts(tag) {
+                if (tag === 'all') {
+                    renderPosts(posts);
+                } else {
+                    const filtered = posts.filter(post => post.tags && post.tags.includes(tag));
+                    renderPosts(filtered);
+                }
+            }
+
+            // Initial render
+            renderPosts(posts);
         });
     </script>
     </div>
     </section>
 
-<div id="site-footer"></div><script src="components/footer.js"></script><script>renderFooter(".");</script></body>
+    <div id="site-footer"></div>
+    <script src="components/footer.js"></script>
+    <script>renderFooter(".");</script>
+</body>
 
 </html>

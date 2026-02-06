@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>_mediumroast</title>
+    <link>https://mediumroast.dev</link>
+    <description>Technical blog by Jason Bauman - SEO, Data Engineering, AI, and more</description>
+    <language>en-us</language>
+    <atom:link href="https://mediumroast.dev/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Making a CMS</title>
+      <link>https://mediumroast.dev/blog/making_a_cms.html</link>
+      <description>I was recently watching a video about vibecoding where they said that you really needed to use a model for a year before you got to the point where you could trust it. </description>
+      <pubDate>Sun, 25 Jan 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://mediumroast.dev/blog/making_a_cms.html</guid>
+    </item>
+  </channel>
+</rss>

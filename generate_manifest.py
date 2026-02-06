@@ -58,12 +58,24 @@ def parse_post(filepath):
     # Clean up summary
     summary = strip_tags(raw_summary)
 
+    # Calculate reading time
+    # Extract all text content from article
+    article_content_match = re.search(r'<div class="article-content">(.*?)</div>', content, re.DOTALL)
+    if article_content_match:
+        article_text = strip_tags(article_content_match.group(1))
+        word_count = len(article_text.split())
+        # Average reading speed: 200 words per minute
+        reading_time = max(1, round(word_count / 200))
+    else:
+        reading_time = 1
+
     return {
         "title": title,
         "date": date_str,
         "iso_date": iso_date,
         "tags": tags,
         "summary": summary,
+        "reading_time": reading_time,
         "filename": os.path.basename(filepath)
     }
 
@@ -121,6 +133,44 @@ def main():
         f.write(sitemap_content)
     
     print("Successfully generated sitemap.xml")
+
+    # Generate RSS Feed
+    rss_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    rss_content += '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+    rss_content += '  <channel>\n'
+    rss_content += f'    <title>_mediumroast</title>\n'
+    rss_content += f'    <link>{BASE_URL}</link>\n'
+    rss_content += f'    <description>Technical blog by Jason Bauman - SEO, Data Engineering, AI, and more</description>\n'
+    rss_content += f'    <language>en-us</language>\n'
+    rss_content += f'    <atom:link href="{BASE_URL}/rss.xml" rel="self" type="application/rss+xml" />\n'
+    
+    # Add posts to RSS (already sorted by date, newest first)
+    for post in posts:
+        rss_content += '    <item>\n'
+        rss_content += f'      <title>{post["title"]}</title>\n'
+        rss_content += f'      <link>{BASE_URL}/blog/{post["filename"]}</link>\n'
+        rss_content += f'      <description>{post["summary"]}</description>\n'
+        rss_content += f'      <pubDate>{format_rfc822_date(post["iso_date"])}</pubDate>\n'
+        rss_content += f'      <guid isPermaLink="true">{BASE_URL}/blog/{post["filename"]}</guid>\n'
+        rss_content += '    </item>\n'
+    
+    rss_content += '  </channel>\n'
+    rss_content += '</rss>'
+
+    with open("rss.xml", "w", encoding="utf-8") as f:
+        f.write(rss_content)
+    
+    print("Successfully generated rss.xml")
+
+def format_rfc822_date(iso_date):
+    """Convert ISO date (YYYY-MM-DD) to RFC 822 format for RSS"""
+    try:
+        dt = datetime.strptime(iso_date, "%Y-%m-%d")
+        # RFC 822 format: "Wed, 25 Jan 2026 00:00:00 GMT"
+        return dt.strftime("%a, %d %b %Y 00:00:00 GMT")
+    except ValueError:
+        # Fallback to current date if parsing fails
+        return datetime.now().strftime("%a, %d %b %Y 00:00:00 GMT")
 
 if __name__ == "__main__":
     main()

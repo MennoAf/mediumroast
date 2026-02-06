@@ -165,11 +165,16 @@ def main():
     with open(TEMPLATE_FILE, 'r', encoding='utf-8') as f:
         template = f.read()
 
+    # 5b. Calculate reading time
+    word_count = len(html_content.split())
+    reading_time = max(1, round(word_count / 200))
+
     # 6. Inject Data
     final_html = template.replace('{{title}}', title)
     final_html = final_html.replace('{{date}}', formatted_date)
     final_html = final_html.replace('{{tags}}', tags)
     final_html = final_html.replace('{{meta}}', meta_desc)
+    final_html = final_html.replace('{{reading_time}}', str(reading_time))
     final_html = final_html.replace('{{content}}', html_content)
 
     # 7. Write to blog/ directory
