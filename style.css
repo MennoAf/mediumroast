@@ -757,6 +757,88 @@ strong {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* Callout Boxes */
+.callout {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    border-left: 4px solid;
+    background: var(--card-bg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.callout:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.callout-title {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+
+.callout-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.callout-content {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Callout Type Colors */
+.callout[data-type="NOTE"] {
+    border-left-color: #4cc9f0;
+    background: rgba(76, 201, 240, 0.08);
+}
+
+.callout[data-type="NOTE"] .callout-title {
+    color: #4cc9f0;
+}
+
+.callout[data-type="TIP"] {
+    border-left-color: #27c93f;
+    background: rgba(39, 201, 63, 0.08);
+}
+
+.callout[data-type="TIP"] .callout-title {
+    color: #27c93f;
+}
+
+.callout[data-type="IMPORTANT"] {
+    border-left-color: #ff6b9d;
+    background: rgba(255, 107, 157, 0.08);
+}
+
+.callout[data-type="IMPORTANT"] .callout-title {
+    color: #ff6b9d;
+}
+
+.callout[data-type="WARNING"] {
+    border-left-color: #ffbd2e;
+    background: rgba(255, 189, 46, 0.08);
+}
+
+.callout[data-type="WARNING"] .callout-title {
+    color: #ffbd2e;
+}
+
+.callout[data-type="CAUTION"] {
+    border-left-color: #ff5f56;
+    background: rgba(255, 95, 86, 0.08);
+}
+
+.callout[data-type="CAUTION"] .callout-title {
+    color: #ff5f56;
+}
+
 /* Mobile Override for Resume Section (Must be last to override desktop grid) */
 @media (max-width: 768px) {
     .resume-grid {

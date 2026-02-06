@@ -17,6 +17,12 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="../style.css">
+
+    <!-- Mermaid.js for diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
 </head>
 
 <body>
@@ -45,6 +51,9 @@
         </div>
     </section>
 
-<div id="site-footer"></div><script src="../components/footer.js"></script><script>renderFooter("..");</script></body>
+    <div id="site-footer"></div>
+    <script src="../components/footer.js"></script>
+    <script>renderFooter("..");</script>
+</body>
 
 </html>

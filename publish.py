@@ -89,8 +89,66 @@ def main():
     # 4. Format Date
     formatted_date = format_date(raw_date)
 
-    # 4. Convert Markdown to HTML
-    html_content = markdown.markdown(body_markdown, extensions=['fenced_code', 'codehilite'])
+    # 4. Pre-process Markdown for GitHub-style callouts
+    # Convert > [!TYPE] syntax to custom HTML with theme-matched colors
+    def process_callouts(text):
+        # Custom colors matching the site's dark industrial theme
+        callout_types = {
+            'NOTE': ('ℹ️', '#4cc9f0', 'rgba(76, 201, 240, 0.15)'),      # Plasma blue (site accent)
+            'TIP': ('💡', '#27c93f', 'rgba(39, 201, 63, 0.15)'),         # Bright green
+            'IMPORTANT': ('❗', '#ff6b9d', 'rgba(255, 107, 157, 0.15)'), # Pink/magenta
+            'WARNING': ('⚠️', '#ffbd2e', 'rgba(255, 189, 46, 0.15)'),   # Amber yellow
+            'CAUTION': ('🔥', '#ff5f56', 'rgba(255, 95, 86, 0.15)')      # Coral red
+        }
+        
+        for callout_type, (icon, border_color, bg_color) in callout_types.items():
+            # Match > [!TYPE] followed by content on next lines starting with >
+            pattern = rf'> \[!{callout_type}\]\n((?:> .*\n?)+)'
+            
+            def replace_callout(match):
+                content = match.group(1)
+                # Remove the leading "> " from each line
+                content_lines = [line[2:] if line.startswith('> ') else line for line in content.split('\n')]
+                content_text = '\n'.join(content_lines).strip()
+                
+                return f'<div class="callout callout-{callout_type.lower()}" data-type="{callout_type}"><div class="callout-title"><span class="callout-icon">{icon}</span><span class="callout-label">{callout_type}</span></div><div class="callout-content">{content_text}</div></div>\n'
+            
+            text = re.sub(pattern, replace_callout, text)
+        
+        return text
+    
+    body_markdown = process_callouts(body_markdown)
+
+    # 4b. Convert Markdown to HTML
+    html_content = markdown.markdown(body_markdown, extensions=['fenced_code', 'codehilite', 'tables', 'nl2br'])
+    
+    # 4c. Post-process for Mermaid diagrams
+    # Convert ```mermaid code blocks to mermaid divs
+    def process_mermaid(html):
+        # Match <code class="language-mermaid">...</code> or similar patterns
+        pattern = r'<code class="language-mermaid">(.*?)</code>'
+        
+        def replace_mermaid(match):
+            mermaid_code = match.group(1)
+            # Unescape HTML entities that markdown might have escaped
+            import html as html_module
+            mermaid_code = html_module.unescape(mermaid_code)
+            return f'<div class="mermaid">{mermaid_code}</div>'
+        
+        html = re.sub(pattern, replace_mermaid, html, flags=re.DOTALL)
+        
+        # Also handle pre>code pattern
+        pattern2 = r'<pre><code class="language-mermaid">(.*?)</code></pre>'
+        def replace_mermaid_pre(match):
+            mermaid_code = match.group(1)
+            import html as html_module
+            mermaid_code = html_module.unescape(mermaid_code)
+            return f'<div class="mermaid">{mermaid_code}</div>'
+        
+        html = re.sub(pattern2, replace_mermaid_pre, html, flags=re.DOTALL)
+        return html
+    
+    html_content = process_mermaid(html_content)
 
     # 4b. Auto-rewrite image paths
     # Finds <img src="filename.jpg"> and converts to <img src="../photos/filename.jpg">
