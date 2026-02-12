@@ -30,6 +30,41 @@ def get_frontmatter(filepath):
     
     return meta
 
+def update_frontmatter_date(filepath):
+    """
+    Updates the frontmatter of a markdown file to set the date to today
+    if no date is present.
+    """
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Check if frontmatter exists
+    pattern = r'^---\s*\n(.*?)\n---\s*\n(.*)'
+    match = re.match(pattern, content, re.DOTALL)
+    
+    if not match:
+        return False  # No frontmatter to update
+    
+    fm_text = match.group(1)
+    body = match.group(2)
+    
+    # Check if date already exists
+    if re.search(r'^date\s*:', fm_text, re.MULTILINE):
+        return False  # Date already set, don't override
+    
+    # Add date to frontmatter
+    today = datetime.now().strftime("%Y-%m-%d")
+    updated_fm = fm_text + f'\ndate: {today}'
+    
+    # Reconstruct file
+    updated_content = f'---\n{updated_fm}\n---\n{body}'
+    
+    # Write back
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(updated_content)
+    
+    return True
+
 def should_publish(draft_path, html_path, meta):
     """
     Determines if a draft should be published.
@@ -76,6 +111,14 @@ def main():
         publish, reason = should_publish(draft_path, html_path, meta)
         
         if publish:
+            # If this is a new post, set the publication date automatically
+            if reason == "New post":
+                date_added = update_frontmatter_date(draft_path)
+                if date_added:
+                    print(f"  Setting publication date to today...")
+                    # Re-read metadata after updating
+                    meta = get_frontmatter(draft_path)
+            
             print(f"Publishing {filename} ({reason})...")
             # Call publish.py
             result = subprocess.run(["python3", "publish.py", draft_path], capture_output=True, text=True)
