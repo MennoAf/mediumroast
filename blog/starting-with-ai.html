@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why I Started Using AI Seriously In 2026 | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="description" content="A short description for the meta tag.">
+    <link rel="canonical" href="https://mediumroast.dev/blog/starting-with-ai.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Mermaid.js for diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+
+    <!-- Analytics -->
+    <script defer data-domain="mediumroast.dev" src="https://plausible.io/js/script.js"></script>
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+    <script src="../components/header.js"></script>
+    <script>renderHeader('..');</script>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-article">
+                <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+
+                <h1 class="article-title">Why I Started Using AI Seriously In 2026</h1>
+                <div class="post-meta">
+                    <span class="post-date">January 25, 2026</span>
+                    <span class="post-reading-time">12 min read</span>
+                    <span class="post-tags"></span>
+                </div>
+
+                <div class="article-content">
+                    <h1>AI Was Just Something I Did For Work In 2025</h1>
+<p>I used AI for the better part of 2025 because I had to understand it for work. </p>
+<p>I got Gemini Pro when I bought my phone and spent a few hours here and there messing around with it, but never as something I would turn to first. </p>
+<p>When they announced a new model I'd run my tests:<br />
+- <strong>For Writing:</strong> Make a Sonnet about a hot dog in iambic pentameter (Gemini 3 Pro was the first "Good" one)<br />
+- <strong>For Images:</strong> Make The Philly Phanatic (Spoiler, still struggles with this one)</p>
+<p>But after I ran my tests, or asked it a few questions to see how it responded, I'd go back to normal search, and be on my way. </p>
+<p>I wrote some POVs on AI Mode and AI Overviews, but didn't really see myself turning to them unless I was researching something for work.</p>
+<blockquote>
+<p>[!Notes] For Those Short On Time<br />
+I know that not everyone has the time to read my ramblings so here's the core argument:<br />
+- A Prompt should be treated as an instruction manual, not a question<br />
+- Vibe Coding is like playing a video game you love on a higher difficulty settings, but with better gear<br />
+- If you're considering models: Gemini has the most generous free/cheap plans, Claude is worth the hype. </p>
+</blockquote>
+<h2>I Got (And Still Get) Annoyed By AI Being Shoved Everywhere</h2>
+<p>I think one of the reasons it took be a bit to warm up to AI was that I couldn't escape it.</p>
+<ul>
+<li>Open my text app? AI</li>
+<li>Open LinkedIn? AI</li>
+<li>Open Outlook at work? Search still sucks, but now it sucks <strong>WITH AI</strong></li>
+</ul>
+<p>There's some things that AI is great for, but there's a lot where it feels like they just tacked it on to add "value" without thinking how to make it useful. </p>
+<p>Between these "features" and trying to use AI as just a glorified search engine, it's not surprising that I was skeptical of AI for most of last year. </p>
+<h2>Gemini Gems (Agents) Changed My View Of What AI Could Do</h2>
+<p>So, what changed? Gems</p>
+<blockquote>
+<p>[!TIP] Gemini Gems | TLDR<br />
+Gems are custom prompts that you can save with specific instructions on what the AI should do, what information it needs to consider, and how it should respond.</p>
+<p>Other AI Tools offer something similar, but most refer to them as "Agents." Agents can be more powerful, but the concept is the same</p>
+</blockquote>
+<p>If you want more, you can keep reading. Otherwise skip to "Dipping My Toes In Vibe Coding"</p>
+<h2>Prompts Matter | Gems SR:PW</h2>
+<blockquote>
+<p>[!QUOTE] Treat Prompts As Instruction Manuals, Not Questions</p>
+</blockquote>
+<p>When I first started working with AI, I treated it like a verbose search. I could just stream of thought a question to the model, and it would do the rest. </p>
+<p>I was wrong.</p>
+<p>A prompt isn't a question. Sure, It can be. But it's a bit like hopping in your car to go to your neighbors. Using an AI for a simple question is overkill. </p>
+<p>If you're going to ask the AI a question, really ask it a question. Don't just say "pizza near me." </p>
+<p>You can use search for that and get the same (likely still better!) results. So you ask "I want places that offer gluten free pizza near me that are known for being heavy on the cheese application"</p>
+<p>You're not just asking a question, you're giving the model more constraints over what you'll accept as an answer.</p>
+<p>An agent, or a Gem, is an <strong>Instruction Manual</strong> for the AI. You can get really detailed, telling it not only what to look for, but also how to look and what kind of information you expect in return. </p>
+<h3>How To Build An Effect Agent Or Gem</h3>
+<p>There's not a perfect way to construct a gem/agent because it can vary based on the agent you're using, how you process information, and what you want it to do. I can just describe what works for me and leave it at that. </p>
+<p>Very broadly, an agent needs a few key items:<br />
+* Description/Role<br />
+* Steps to complete in task<br />
+* Rules to follow<br />
+* The output you want<br />
+* (optional) Next steps</p>
+<p>Depending on your ask, these can be small or massive sections.</p>
+<h4>Description</h4>
+<p>This is a short summary of why the agent/gem exists. Something like "This tool can write content in my brand's voice and format it in a way that is easy to copy into my CMS" can be enough. </p>
+<p>The goal isn't to give a grand vision, but just a TLDR. The rest of the content gives you what you need.</p>
+<h4>Steps To Complete The Task</h4>
+<p>This is where you need to specify how the bot responds. <br />
+* What kind of information are you going to give it? A link? Text? Code?<br />
+* What should it do with that information? QA/Edit/Research?</p>
+<p>More complex asks will require more complex task lists. Think of these like an <code>order of operations</code> for the model.</p>
+<h4>The output you Want</h4>
+<p>Now you tell the agent/gem how you want its answer. <br />
+* Do you want it to be brief or explain it's reasoning?<br />
+* If it's making code, do you want it in JS or Python?<br />
+* If you're getting text, do you want it as a markdown file?</p>
+<h4>Optional - Make Some Followups</h4>
+<p>This, to me, is one of the most powerful features of a model. You can define pre-defined follow ups so if you find yourself doing something after you get the output a lot, give it an option. </p>
+<p>In gemini, these look like this: </p>
+<div class="codehilite"><pre><span></span><code><span class="gu">## Follow Ups</span>
+After providing an answer, give users a couple of recommended next steps they can take
+<span class="k">*</span><span class="w"> </span><span class="gs">**/polish**</span> - Create a high level executive summary of the content with the target for a non-technical CMO. Include a 90 day action plan
+<span class="k">*</span><span class="w"> </span><span class="gs">**/visualize**</span> - Use Nano Banana Pro To Turn The Core Argument into an image that can be inserted into a slide deck
+<span class="k">*</span><span class="w"> </span><span class="gs">**/compare**</span> - Provide another argument and have the agent provide the same logic to the process, identifying strengths and weaknesses and showing who is better on the merits
+</code></pre></div>
+
+<p>When you get a response, the model will give you these options and you can continue the conversation. </p>
+<p>One cool thing I've noticed is that </p>
+<h4>A Great Prompt Is Never Final</h4>
+<p>Making a good agent, especially your FIRST good one, will take time. </p>
+<p>==<strong>A lot of time.</strong> ==</p>
+<p>Then you'll use it and LOVE the output, until you start thinking of ways to improve it. </p>
+<p>My most used gems are updated and rewritten frequently. I'll notice them making a mistake over and over, or I'll think of a new way to augment them to make them more powerful. </p>
+<p>Agents actually excel at helping to improve their own code. If you notice a flaw, ask them questions about it, get them to explain their logic and improve it. Then ask how they would rewrite their prompt so the issue isn't made again. </p>
+<h2>Vibe Coding Helped Me Code Outside Of Work Again</h2>
+<p>I didn't start coding until I started working at my current company. </p>
+<p>That's a lie, I used to program my TI-83+ in High school because I hated remembering the Physics formulas, but outside of that brief experimentation, the most advanced I got with programming was adjusting some HTML on Myspace in college.</p>
+<p>When I started at my current job, we had a couple of defunct python tools that no one knew how to fix, so I brute forced them to get them working again. </p>
+<p>And I loved it.</p>
+<p>Coding is like building legos, or getting your base in a video game functioning perfectly. </p>
+<p>I had all these aspirations of getting better at coding and building cool stuff outside of work. </p>
+<p>But when I got outside of work, I didn't have the drive to code.</p>
+<p>At work, I spent my time understanding the ins and outs of the stuff I needed to do for my job, and so when I clocked out, I wanted to do something totally different but researching new things felt like work. </p>
+<p>Late last year, I started Vibe coding. </p>
+<p>The thrill of getting something functional cannot be overstated, but what I really liked is that after I got something working I could ask <strong>WHY</strong>.  I think I've spent more time adjusting the code and working on features and corrections than I have building new things and I love it. </p>
+<p>Now, coding is almost like a game. </p>
+<p>I don't claim to be an expert. I will <em>NEVER</em> claim that something I've vibe coded is "Entirely mine."  I have the ideas, but everything else is collaborative. </p>
+<p>I want to write more about this (and yes, about the ethics of AI more broadly) later, so I'll leave it at this:</p>
+<p>Before I started vibe coding I had the DESIRE to code and the desire to write. Now I am doing both. This blog, and all it's rambling, will always be 100% me unless you see a big flashing warning telling you otherwise. </p>
+<h2>This All Sounds Interesting, Jason, How Can I Start?</h2>
+<p>The easiest way to start is just pick a model and start experimenting with it. There are tools out there that promise to give you access to EVERY model out there, but if you're going to try something, the cheapest way is usually through the platforms provided by the company itself.</p>
+<h3>Gemini Offers The Cheapest Way To Try Using Agents</h3>
+<p>The free Gemini account (anyone with a Gmail can get it) offers access to Gems, so you can start messing around with creating agents. </p>
+<p>They also allow you to use Antigravity and AI Studio, two of their vibe coding tools, on their free plan, though usage is pretty limited.</p>
+<p>If you DO go with them, their entry level AI is $20 a month or $200 a year. But it comes with 2TB of plan storage and you can share that AI with others on your plan (though I believe you also share usage)</p>
+<p>Talking to Gemini is like talking to Google. Stuff like BOOLEAN scripts and JSON entry can help you give detailed instructions to your model, improving your </p>
+<h4>How To Access</h4>
+<ul>
+<li>Google - Google Search and AI Mode use a modified version of Gemini</li>
+<li>gemini web app (gemini.google.com) - This is where you can get gems</li>
+<li>AI Studio - create simple apps and tools using Gemini</li>
+<li>AntiGravity - Download this to build using an agent-first development model <ul>
+<li>As an aside: This also provides (limited) access to Claude models so you can try them here!</li>
+</ul>
+</li>
+<li>Gemini CLI - Terminal application for your computer</li>
+</ul>
+<h4>Things To Think About</h4>
+<p><code>Pros:</code> <br />
+* Generous Free Tier (Can use all tools for free) and some really nice secondary benefits if you subscribe (2TB of storage, sharing plan, etc). <br />
+* Nano Banana Pro (Image generation) is seriously top notch. <br />
+* Email chain summaries genuinely useful</p>
+<p><code>Cons:</code><br />
+* When you want to start seriously coding, Gemini can fight you a bit on context. What I mean is that you have to be <strong>Very</strong> specific about what you want Gemini to do because when it decides to do something, it can go off the rails. <br />
+* Specificity Loop: If you're adapting your prompts using a single problem, the prompt can get overly specific and start missing details when you try something new.</p>
+<h3>Claude Is An Exponential Improvement, But You Pay For It</h3>
+<p>I am relatively new to Claude. I had Gemini pro for a year and about 2-3 months of active usage. I have a week of usage under my belt for Claude so take that into consideration. </p>
+<p>But holy crap is it a big difference. </p>
+<p>Claude allows you to chat with it for free, but to do anything serious with it, you'll need to pay. But what do you get for paying?</p>
+<p>Gemini feels like you're using old school search. It is VERY powerful, but left to it's own devices (especially 3 pro) it will start pulling in some wild stuff that isn't related to your core project. </p>
+<p>Opus is the most powerful model that Claude offers. Like Gemini, it will do thinking and suggest stuff that you didn't initially ask for, but these things are <strong>much</strong> more likely to be on task. </p>
+<h4>How To Access</h4>
+<ul>
+<li>Through the web (Claude.ai) - Free with an account<ul>
+<li>Pro users can access Claude Code through their browser, as long as they're interacting with projects on Github</li>
+</ul>
+</li>
+<li>Claude Code - Must Pay for an account (Accounts are $20,100,200 per month)<ul>
+<li>This is a Command Line interface </li>
+</ul>
+</li>
+<li>Claude Cowork - Must pay for an account<ul>
+<li>This is a more user friendly interact to automate tasks on your desktop</li>
+</ul>
+</li>
+</ul>
+<h4>Things to think about</h4>
+<p><code>Pros</code><br />
+* Extremely effective for coding<br />
+* Models seem to understand context more and are less likely to drive (though they still need hand holding)<br />
+* If you use the command line tool, I think that Claude is better than Gemini's offering</p>
+<p><code>Cons</code><br />
+* You need a paid account to do any of the coding<br />
+* You can run out of our usage <em>really</em> easily, especially if you use Opus for everything. (you don't need opus for everything)<br />
+* Because of how Claude works, it's very easy to get ahead of yourself with a plan. So back up often</p>
+<h3>But what about Open AI, Grok, etc?</h3>
+<p>Grok is owned by a Nazi, OpenAI's cofounder is the biggest contributor to Donald Trump. No AI company is without blame, but there should be some standards.</p>
+<h3>Ok but what about open source models?</h3>
+<p>Open source models are great! I plan on researching them more. But they're not going to be as easy to get started with if you're just exploring AI, so don't start there. If you want a challenge, by all means, but if you want a quicker jumping off point, do Gemini or Claude. </p>
+                </div>
+
+                <!-- Social Share Buttons -->
+                <div class="share-section">
+                    <h3>Share this post</h3>
+                    <div class="share-buttons">
+                        <a href="https://twitter.com/intent/tweet?text=Why I Started Using AI Seriously In 2026&url=https://mediumroast.dev/blog/starting-with-ai.html" target="_blank"
+                            rel="noopener" class="share-btn share-twitter" title="Share on Twitter">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://mediumroast.dev/blog/starting-with-ai.html" target="_blank"
+                            rel="noopener" class="share-btn share-linkedin" title="Share on LinkedIn">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                            LinkedIn
+                        </a>
+                        <a href="mailto:?subject=Why I Started Using AI Seriously In 2026&body=Check out this article: https://mediumroast.dev/blog/starting-with-ai.html"
+                            class="share-btn share-email" title="Share via Email">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
+                            Email
+                        </a>
+                        <button class="share-btn share-copy" onclick="copyLink()" title="Copy link">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <script>
+                    function copyLink() {
+                        const url = window.location.href;
+                        navigator.clipboard.writeText(url).then(() => {
+                            const btn = document.querySelector('.share-copy');
+                            const originalText = btn.innerHTML;
+                            btn.innerHTML = '<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Copied!';
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                            }, 2000);
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <div id="site-footer"></div>
+    <script src="../components/footer.js"></script>
+    <script>renderFooter("..");</script>
+</body>
+
+</html>

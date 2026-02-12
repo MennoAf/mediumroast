@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://mediumroast.dev/rss.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Why I Started Using AI Seriously In 2026</title>
+      <link>https://mediumroast.dev/blog/starting-with-ai.html</link>
+      <description>I used AI for the better part of 2025 because I had to understand it for work. </description>
+      <pubDate>Sun, 25 Jan 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://mediumroast.dev/blog/starting-with-ai.html</guid>
+    </item>
+    <item>
       <title>Making a CMS</title>
       <link>https://mediumroast.dev/blog/making_a_cms.html</link>
       <description>I was recently watching a video about vibecoding where they said that you really needed to use a model for a year before you got to the point where you could trust it. </description>

@@ -1,19 +1,57 @@
-/* Modern Industrial Design System */
-:root {
-    /* Color Palette */
-    --bg-color: #1a1a1d;
-    /* Deep Charcoal */
-    --text-primary: #ededed;
-    /* Off-white for high contrast */
-    --text-secondary: #a0a0a0;
-    /* Light grey for secondary text */
-    --accent-color: #4cc9f0;
-    /* Plasma Blue */
-    --accent-dim: rgba(76, 201, 240, 0.1);
-    /* Dim version for backgrounds */
-    --card-bg: #252529;
-    /* Slightly lighter charcoal for cards */
+/* Modern Coffee-Inspired Design System */
 
+/* Dark Mode (Default) */
+[data-theme="dark"] {
+    /* Color Palette - Dark Mode */
+    --bg-color: #2C211D;
+    /* Deep Espresso */
+    --text-primary: #EFEBE9;
+    /* Light Foam */
+    --text-secondary: #BCAAA4;
+    /* Pale Mocha */
+    --accent-color: #FFB300;
+    /* Vivid Amber */
+    --accent-dim: rgba(255, 179, 0, 0.1);
+    /* Dim Amber */
+    --card-bg: #3E2723;
+    /* Slightly lighter espresso for cards */
+    --primary-brand: #A1887F;
+    /* Aged Barrel Brown */
+    --on-primary: #2C211D;
+    /* Deep Espresso on primary */
+
+    /* Code Editor Colors */
+    --code-bg: #1e1e1e;
+    --code-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Light Mode */
+[data-theme="light"] {
+    /* Color Palette - Light Mode */
+    --bg-color: #F8F3E8;
+    /* Pale Crema */
+    --text-primary: #3E2723;
+    /* Dark Espresso */
+    --text-secondary: #6D4C41;
+    /* Medium Mocha */
+    --accent-color: #FFB300;
+    /* Vivid Amber */
+    --accent-dim: rgba(255, 179, 0, 0.15);
+    /* Dim Amber */
+    --card-bg: #FFFFFF;
+    /* White cards for contrast */
+    --primary-brand: #795548;
+    /* Deep Bourbon Brown */
+    --on-primary: #F8F3E8;
+    /* Pale Crema on primary */
+
+    /* Code Editor Colors */
+    --code-bg: #f5f5f5;
+    --code-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Fallback for browsers without theme set */
+:root {
     /* Typography */
     --font-heading: 'Fira Code', monospace;
     --font-body: 'Inter', sans-serif;
@@ -29,6 +67,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -107,10 +146,10 @@ header {
     top: 0;
     width: 100%;
     padding: var(--spacing-md) 0;
-    background: rgba(26, 26, 29, 0.95);
+    background: var(--bg-color);
     backdrop-filter: blur(5px);
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--accent-dim);
 }
 
 nav {
@@ -138,6 +177,49 @@ nav {
 .nav-links a:hover {
     opacity: 1;
 }
+
+/* Theme Toggle Button */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid var(--accent-dim);
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent-color);
+    background: var(--accent-dim);
+}
+
+.theme-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Show coffee bean in dark mode, hide flower */
+[data-theme="dark"] .coffee-flower {
+    display: none;
+}
+
+[data-theme="dark"] .coffee-bean {
+    display: block;
+}
+
+/* Show coffee flower in light mode, hide bean */
+[data-theme="light"] .coffee-bean {
+    display: none;
+}
+
+[data-theme="light"] .coffee-flower {
+    display: block;
+}
+
 
 /* Hero Section */
 .hero {
@@ -248,8 +330,8 @@ nav {
         top: 100%;
         left: 0;
         width: 100%;
-        background: rgba(26, 26, 29, 0.98);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: var(--bg-color);
+        border-bottom: 1px solid var(--accent-dim);
         flex-direction: column;
         padding: var(--spacing-lg) 0;
         gap: var(--spacing-md);
@@ -526,15 +608,14 @@ strong {
 }
 
 .code-editor {
-    background: #1e1e1e;
-    /* VS Code-like Dark */
+    background: var(--code-bg);
     border-radius: 8px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     max-width: 600px;
     width: 100%;
     margin: 0 auto;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--code-border);
 }
 
 .editor-header {
@@ -848,14 +929,14 @@ strong {
 }
 
 .article-content pre {
-    background: #1e1e1e;
+    background: var(--code-bg);
     padding: var(--spacing-md);
     border-radius: 4px;
     overflow-x: auto;
     margin: var(--spacing-md) 0;
     font-family: var(--font-heading);
     font-size: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--code-border);
 }
 
 .article-content code {
@@ -871,14 +952,14 @@ strong {
     padding: 0;
 }
 
-/* Syntax Highlighting (Pygments-compatible dark theme) */
+/* Syntax Highlighting (Theme-aware) */
 .codehilite .hll {
-    background-color: #49483e
+    background-color: var(--accent-dim);
 }
 
 .codehilite {
-    background: #1e1e1e;
-    color: #f8f8f2
+    background: var(--code-bg);
+    color: var(--text-primary);
 }
 
 .codehilite .c {

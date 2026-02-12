@@ -1,5 +1,14 @@
 window.BLOG_POSTS = [
     {
+        "title": "Why I Started Using AI Seriously In 2026",
+        "date": "January 25, 2026",
+        "iso_date": "2026-01-25",
+        "tags": "",
+        "summary": "I used AI for the better part of 2025 because I had to understand it for work. ",
+        "reading_time": 5,
+        "filename": "starting-with-ai.html"
+    },
+    {
         "title": "Making a CMS",
         "date": "January 25, 2026",
         "iso_date": "2026-01-25",

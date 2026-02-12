@@ -1,24 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background: Dark Charcoal #1a1a1d with rounded corners -->
-  <rect width="512" height="512" rx="128" fill="#1a1a1d"/>
+  <!-- Background: Deep Espresso #2C211D with rounded corners -->
+  <rect width="512" height="512" rx="128" fill="#2C211D"/>
   
-  <!-- Coffee Cup: Plasma Blue #4cc9f0 -->
+  <!-- Coffee Cup: Vivid Amber #FFB300 -->
   <g transform="translate(96, 128)">
     <!-- Cup Body -->
     <path d="M32,0 H288 A16,16 0 0 1 304,16 V144 A144,144 0 0 1 160,288 H160 A144,144 0 0 1 16,144 V16 A16,16 0 0 1 32,0 Z" 
-          fill="none" stroke="#4cc9f0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+          fill="none" stroke="#FFB300" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
     
     <!-- Liquid Level -->
     <path d="M48,80 H272 A0,0 0 0 1 272,80 V144 A112,112 0 0 1 160,256 H160 A112,112 0 0 1 48,144 V80 A0,0 0 0 1 48,80 Z" 
-          fill="#4cc9f0" opacity="0.9"/>
+          fill="#FFB300" opacity="0.9"/>
           
     <!-- Handle -->
     <path d="M304,64 H320 A64,64 0 0 1 384,128 V128 A64,64 0 0 1 320,192 H304" 
-          fill="none" stroke="#4cc9f0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+          fill="none" stroke="#FFB300" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
   <!-- Steam -->
-  <g transform="translate(170, 50)" fill="none" stroke="#4cc9f0" stroke-width="24" stroke-linecap="round">
+  <g transform="translate(170, 50)" fill="none" stroke="#FFB300" stroke-width="24" stroke-linecap="round">
     <path d="M20,60 Q50,30 20,0">
       <animate attributeName="d" dur="3s" repeatCount="indefinite" values="M20,60 Q50,30 20,0; M20,60 Q-10,30 20,0; M20,60 Q50,30 20,0"/>
     </path>
