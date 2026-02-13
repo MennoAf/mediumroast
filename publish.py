@@ -102,13 +102,24 @@ def main():
         }
         
         for callout_type, (icon, border_color, bg_color) in callout_types.items():
-            # Match > [!TYPE] followed by content on next lines starting with >
-            pattern = rf'> \[!{callout_type}\]\n((?:> .*\n?)+)'
+            # Match >[!TYPE] Title (on same line) followed by content on next lines starting with >
+            # Pattern: >[!TYPE] rest of first line\n>more content\n>more content
+            pattern = rf'>[ ]?\[!{callout_type}\]([^\n]*)\n((?:>.*\n?)*)'
             
             def replace_callout(match):
-                content = match.group(1)
-                # Remove the leading "> " from each line
-                content_lines = [line[2:] if line.startswith('> ') else line for line in content.split('\n')]
+                first_line = match.group(1).strip()  # Title/first line after [!TYPE]
+                remaining_content = match.group(2) if match.group(2) else ''
+                
+                # Remove the leading ">" and optional space from remaining content lines
+                content_lines = [first_line] if first_line else []
+                for line in remaining_content.split('\n'):
+                    if line.startswith('> '):
+                        content_lines.append(line[2:])
+                    elif line.startswith('>'):
+                        content_lines.append(line[1:])
+                    elif line.strip():  # Only add non-empty lines
+                        content_lines.append(line)
+                
                 content_text = '\n'.join(content_lines).strip()
                 
                 return f'<div class="callout callout-{callout_type.lower()}" data-type="{callout_type}"><div class="callout-title"><span class="callout-icon">{icon}</span><span class="callout-label">{callout_type}</span></div><div class="callout-content">{content_text}</div></div>\n'
