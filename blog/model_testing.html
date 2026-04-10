@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst. | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="description" content="Anthropic announced their Advisor Strategy, I benchmarked it in Task Creation. The Results changed how I used the tool">
+    <meta name="crosspost" content="true">
+    <meta name="project_type" content="Research">
+    <link rel="canonical" href="https://mediumroast.dev/blog/model_testing.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css?v=1.1">
+
+    <!-- Mermaid.js for diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+
+    <!-- Analytics -->
+    <script defer data-domain="mediumroast.dev" src="https://plausible.io/js/script.js"></script>
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+    <script src="../components/header.js"></script>
+    <script>renderHeader('..');</script>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-article">
+                <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+
+                <h1 class="article-title">I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.</h1>
+                <div class="post-meta">
+                    <span class="post-date">April 09, 2026</span>
+                    <span class="post-reading-time">15 min read</span>
+                    <span class="post-tags">#coding/ai #benchmarking</span>
+                </div>
+
+                <div class="article-content">
+                    <h2>The Claim vs. The Data</h2>
+<p>Anthropic's <a href="https://claude.com/blog/the-advisor-strategy">Advisor Strategy</a> promises near-Opus intelligence at near-Sonnet cost. A server-side tool that pairs a cheap executor model with an expensive advisor. </p>
+<p>One API call, no extra round-trips, the executor decides when to consult.</p>
+<p>The published benchmarks are compelling: +2.7 percentage points on SWE-bench Multilingual, 11.9% cost reduction per agentic task, and Haiku with an Opus advisor more than doubling its BrowseComp score.</p>
+<p>I wanted to know: <strong>does this hold up on task decomposition?</strong> Breaking complex product requirements into executable task graphs is the foundation of my autonomous agent system. </p>
+<p>It's architecturally demanding, structurally unforgiving, and something that Anthropic's published evaluations don't cover.</p>
+<p>So I built a benchmark and ran it.</p>
+<hr />
+<h2>The Benchmark</h2>
+<h3>What I Measured</h3>
+<p>My benchmark evaluates how well a model decomposes, or breaks down, a Product Requirements Document (PRD) into an executable task graph.</p>
+<p>This is the kind of work that drives a lot of how I use the tool. I measured two things:</p>
+<p><strong>Decomposition</strong> — turning a PRD into a structured task graph with epics (sprints), dependencies, file assignments, and parallel execution paths.</p>
+<p>This helps agents reliably complete tasks without running out of context or potentially overwriting the same file multiple times.</p>
+<p><strong>Enrichment</strong> — adding execution metadata to each task: acceptance criteria (<code>done_when</code>), complexity estimates, and implementation context. These help agents know when a task is done, how long it should take, and what files it touches.</p>
+<h3>Test Fixtures</h3>
+<p>I used two PRDs of deliberately different complexity:</p>
+<table>
+<thead>
+<tr>
+<th>PRD</th>
+<th>Domain</th>
+<th>Word Count</th>
+<th>Expected Tasks</th>
+<th>Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LinkCrate</strong></td>
+<td>CLI bookmark manager</td>
+<td>535 words</td>
+<td>10-16</td>
+<td>Simple — single-epic, clear boundaries</td>
+</tr>
+<tr>
+<td><strong>Weaver</strong></td>
+<td>Autonomous agent executor</td>
+<td>3,057 words</td>
+<td>25-55</td>
+<td>Complex — multi-epic, Docker, async, cross-cutting concerns</td>
+</tr>
+</tbody>
+</table>
+<p>LinkCrate is a PRD I use as a benchmark to ensure my workflow doesn't have regressions (which is getting having failures happen more often as the workflow gets more complex).</p>
+<p>Weaver is the PRD I used to create the workflow the benchmark is run in. It's a complex, multi-epic project that requires careful planning and coordination to complete successfully.</p>
+<h3>Scoring Methodology</h3>
+<p>Each decomposition is scored across six weighted dimensions:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Weight</th>
+<th>What It Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Parallelism</strong></td>
+<td>25%</td>
+<td>Critical path ratio and parallel width. Shorter critical path = more tasks can run concurrently.</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>20%</td>
+<td>Task count within the target sweet spot. Too few = under-specified. Too many = over-fragmented.</td>
+</tr>
+<tr>
+<td><strong>Dependency Coherence</strong></td>
+<td>20%</td>
+<td>File conflict rate — how many dependency edges the validator had to add because the model missed them. Fewer corrections = better planning.</td>
+</tr>
+<tr>
+<td><strong>Specificity</strong></td>
+<td>15%</td>
+<td>Task title word count and file reference rate. Vague tasks ("set up backend") score low. Specific tasks ("implement Redis session store in src/auth/session.py") score high.</td>
+</tr>
+<tr>
+<td><strong>Epic Balance</strong></td>
+<td>10%</td>
+<td>Even distribution of tasks across epics. Lopsided graphs indicate structural misunderstanding.</td>
+</tr>
+<tr>
+<td><strong>TDD Structure</strong></td>
+<td>10%</td>
+<td>Test task matching — does each implementation task have a corresponding test task?</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Composite overall score</strong> weights quality (55%), cost efficiency (25%), and speed (20%):</p>
+<div class="codehilite"><pre><span></span><code>overall = quality × 0.55 + cost_factor × 0.25 + speed_factor × 0.20
+</code></pre></div>
+
+<p>Cost and speed factors are normalized against per-PRD baselines ($0.50/120s for simple, $2.00/180s for complex). </p>
+<p>This means that a model that produces excellent quality at unreasonable costs have a penalty but models that can create good quality at reasonable costs are rewarded.</p>
+<p>Enrichment scoring uses a parallel rubric: </p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Weight</th>
+<th>What It Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Completeness</strong></td>
+<td>25%</td>
+<td>Fraction of tasks that received all three enrichment fields (done_when, complexity, context). A task missing any one field counts as incomplete.</td>
+</tr>
+<tr>
+<td><strong>Context Depth</strong></td>
+<td>20%</td>
+<td>Average number of context keys per task, normalized against 8 keys as the ceiling. More context keys = richer implementation guidance. Caps at 1.0.</td>
+</tr>
+<tr>
+<td><strong>Specificity</strong></td>
+<td>20%</td>
+<td>Average character length of done_when acceptance criteria, normalized against 200 chars. Longer = more specific pass/fail criteria. Caps at 1.0.</td>
+</tr>
+<tr>
+<td><strong>JSON Validity</strong></td>
+<td>20%</td>
+<td>Percentage of enrichment responses that were valid, parseable JSON. Measures structural reliability of the model's output format.</td>
+</tr>
+<tr>
+<td><strong>Per-Skill Reliability</strong></td>
+<td>15%</td>
+<td>The worst success rate across all enrichment skills. Uses min, not average. One flaky skill drags the whole score. Measures consistency across different enrichment types.</td>
+</tr>
+</tbody>
+</table>
+<h3>The Test Matrix</h3>
+<p>I tested 8 model configurations across both PRDs:</p>
+<p><strong>Baselines (3):</strong><br />
+- Haiku 4.5 solo<br />
+- Sonnet 4.6 solo<br />
+- Opus 4.6 solo</p>
+<p><strong>Advisor variants (5):</strong><br />
+- Sonnet executor + Opus advisor (max_uses: 3 and 5)<br />
+- Haiku executor + Opus advisor (max_uses: 3 and 5)<br />
+- Haiku executor + Sonnet advisor (max_uses: 3)</p>
+<p>The advisor tool (<code>advisor_20260301</code>) is configured as a server-side tool in the Messages API. max_uses is how many times that agent can call the advisor model per run. This was done to help control costs, as the advisor model is significantly more expensive than the executor model and the executor decides when it makes the call, there is no way to configure that logic. </p>
+<hr />
+<h2>The Results</h2>
+<h3>Simple Decomposition (LinkCrate, 535 words)</h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Quality</th>
+<th>Cost</th>
+<th>Time</th>
+<th>Crit Path</th>
+<th>Width</th>
+<th>Conflicts</th>
+<th>Overall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Haiku+Opus adv(5)</strong></td>
+<td>83.2</td>
+<td>$0.259</td>
+<td>82.9s</td>
+<td>7/10</td>
+<td>3</td>
+<td>0</td>
+<td><strong>84.1</strong></td>
+</tr>
+<tr>
+<td><strong>Haiku solo</strong></td>
+<td>81.1</td>
+<td>$0.020</td>
+<td>38.7s</td>
+<td>7/11</td>
+<td>3</td>
+<td>1</td>
+<td><strong>87.7 ★</strong></td>
+</tr>
+<tr>
+<td>Opus solo</td>
+<td>74.8</td>
+<td>$0.459</td>
+<td>111.3s</td>
+<td>8/11</td>
+<td>2</td>
+<td>3</td>
+<td>75.8</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(3)</td>
+<td>72.3</td>
+<td>$0.350</td>
+<td>135.4s</td>
+<td>9/10</td>
+<td>2</td>
+<td>2</td>
+<td>74.8</td>
+</tr>
+<tr>
+<td>Sonnet solo</td>
+<td>70.1</td>
+<td>$0.097</td>
+<td>101.6s</td>
+<td>9/10</td>
+<td>2</td>
+<td>3</td>
+<td>78.1</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(3)</td>
+<td>68.3</td>
+<td>$0.269</td>
+<td>79.8s</td>
+<td>7/7</td>
+<td>1</td>
+<td>0</td>
+<td>75.9</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(5)</td>
+<td>62.3</td>
+<td>$0.362</td>
+<td>135.6s</td>
+<td>9/9</td>
+<td>1</td>
+<td>2</td>
+<td>69.1</td>
+</tr>
+<tr>
+<td>Haiku+Sonnet adv(3)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>FAILED (timeout)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The winner: Haiku solo.</strong> 87.7 overall. $0.02. 39 seconds. The cheapest model in the matrix produced the best value on simple decomposition, and it wasn't close. </p>
+<p>This was honestly surprising, since it is not what I expected and prior to this point I thought I needed Sonnet for these tasks.</p>
+<p>Haiku+Opus advisor(5) achieved the highest raw quality (83.2), but at 13x the cost and 2x the time. This lowered the overall score, since the small increase in quality is not worth that cost differential since any errors in decomposition are addressed during the enrichment phase.</p>
+<p>Opus solo, the most expensive option at $0.459, scored 75.8 overall with 3 file conflicts and only 2-wide parallelism. It over-structured a simple problem.</p>
+<p>Pricier isn't always better! </p>
+<p>But, this was a relatively simple PRD, something you could comfortably complete in a Claude session or two. The real test is complex decomposition.</p>
+<h3>Complex Decomposition (Weaver, 3,057 words)</h3>
+<p>Weaver is a system that you can call from the command line and give it a PRD. </p>
+<p>The tool then has to spin up a docker container, clone a development environement into that repo, decompose the PRD into tasks, and then autonomously build that PRD into functional cobe by calling agents to tackle each task.</p>
+<p>This is a real tool that I've built and use everyday for my workflow, and the complexity makes it an excellent benchmark.</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Quality</th>
+<th>Cost</th>
+<th>Time</th>
+<th>Crit Path</th>
+<th>Width</th>
+<th>Conflicts</th>
+<th>Overall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sonnet solo</strong></td>
+<td>83.2</td>
+<td>$0.199</td>
+<td>238.3s</td>
+<td>12/26</td>
+<td>4</td>
+<td>0</td>
+<td><strong>83.5 ★</strong></td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(5)</td>
+<td>82.9</td>
+<td>$0.609</td>
+<td>297.2s</td>
+<td>11/24</td>
+<td>4</td>
+<td>0</td>
+<td>80.4</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(5)</td>
+<td>71.3</td>
+<td>$0.474</td>
+<td>167.1s</td>
+<td>13/27</td>
+<td>5</td>
+<td>15</td>
+<td>78.1</td>
+</tr>
+<tr>
+<td>Opus solo</td>
+<td>69.3</td>
+<td>$0.993</td>
+<td>284.7s</td>
+<td>17/27</td>
+<td>3</td>
+<td>16</td>
+<td>72.1</td>
+</tr>
+<tr>
+<td>Haiku+Sonnet adv(3)</td>
+<td>60.9</td>
+<td>$0.170</td>
+<td>173.3s</td>
+<td>12/21</td>
+<td>3</td>
+<td>12</td>
+<td>73.2</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(3)</td>
+<td>74.0</td>
+<td>$0.636</td>
+<td>906.6s</td>
+<td>13/21</td>
+<td>4</td>
+<td>0</td>
+<td>63.7</td>
+</tr>
+<tr>
+<td>Haiku solo</td>
+<td>9.0</td>
+<td>$0.039</td>
+<td>80.9s</td>
+<td>—/0</td>
+<td>0</td>
+<td>0</td>
+<td>47.6</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(3)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>FAILED (FK constraint)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The winner: Sonnet solo.</strong> 83.5 overall. $0.20. Zero file conflicts. 4-wide parallelism. Clean, well-structured task graphs at reasonable cost.</p>
+<p>This also surprised me because I previous used Opus for this level, assuming that I needed the reasoning abilities to handle the complexity of the PRD. It turns out that Sonnet is more than capable, at least at this level. </p>
+<p><strong>Haiku solo produced zero tasks.</strong> It couldn't handle multi-epic decomposition at all. Quality score: 9.0. While Haiku easily handled simple PRDs, it completely failed at complex decomposition.</p>
+<p><strong>The rescue: Haiku+Opus advisor(5) recovered to 71.3 quality</strong> with 27 tasks and 5-wide parallelism. The advisor genuinely saved an otherwise dead run. But at $0.474, you're paying more than double what Sonnet costs and the outcome still couldn't match Sonnet. </p>
+<p>For decomposition tasks, this was the only scenario where the advisor provided noticable value. </p>
+<p>I plan on investigating why, but it was a surprising outcome and counter to what I expected going into this benchmark. </p>
+<p><strong>The surprise: Opus solo was the worst value.</strong> $0.993 for 69.3 quality, 16 file conflicts, and the longest critical path in the matrix (17/27). The most expensive model produced task graphs that were harder to execute in parallel.</p>
+<h3>Enrichment (LinkCrate, 15 tasks)</h3>
+<p>After a task is decomposed, the next step is to enrich it. This will give useful context to that task to help the model get the task done right the first time. This process also can catch issues with the decomposition, such as missing context or tasks that are too complex. </p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Quality</th>
+<th>Cost</th>
+<th>Time</th>
+<th>Done%</th>
+<th>Cplx%</th>
+<th>JSON%</th>
+<th>Advisor Calls</th>
+<th>Overall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Haiku solo</strong></td>
+<td>93.0</td>
+<td>$0.138</td>
+<td>48.8s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>—</td>
+<td><strong>94.0 ★</strong></td>
+</tr>
+<tr>
+<td>Sonnet solo</td>
+<td>93.0</td>
+<td>$0.658</td>
+<td>130.4s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>—</td>
+<td>88.0</td>
+</tr>
+<tr>
+<td>Haiku+Sonnet adv(3)</td>
+<td>79.0</td>
+<td>$0.123</td>
+<td>126.4s</td>
+<td>100%</td>
+<td>87%</td>
+<td>87%</td>
+<td>1/20</td>
+<td>84.8</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(3)</td>
+<td>93.0</td>
+<td>$1.289</td>
+<td>93.0s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>9/30</td>
+<td>83.5</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(5)</td>
+<td>92.8</td>
+<td>$1.811</td>
+<td>109.3s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>13/30</td>
+<td>78.7</td>
+</tr>
+<tr>
+<td>Opus solo</td>
+<td>93.0</td>
+<td>$3.378</td>
+<td>141.0s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>—</td>
+<td>68.2</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(3)</td>
+<td>93.0</td>
+<td>$3.423</td>
+<td>210.8s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>18/30</td>
+<td>66.8</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(5)</td>
+<td>93.0</td>
+<td>$3.617</td>
+<td>207.8s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>20/30</td>
+<td>66.8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Enrichment is something all models handle well.</strong> Every model except one hit 93.0 quality with 100% completion across all metrics. The difference is entirely cost:</p>
+<ul>
+<li>Haiku: $0.14 for 93.0 quality</li>
+<li>Opus: $3.38 for 93.0 quality</li>
+<li>Sonnet+Opus adv(5): $3.62 for 93.0 quality</li>
+</ul>
+<p>That's a <strong>24x cost difference for identical output.</strong></p>
+<p>The one exception: <strong>Haiku+Sonnet advisor(3) dropped to 79.0 quality</strong> with 87% completion rates. </p>
+<p>In this case, Sonnet acted like a middle manager who came and started making changes to a project that was already being handled perfectly by Haiku. It introduced errors and inefficiencies that Haiku would have never made on its own.</p>
+<h3>Complex Enrichment (Weaver, 34 tasks)</h3>
+<p>This is the test that completes the story. Simple enrichment was easy for all of the agents. Does that hold when you're enriching 34 tasks from a complex, multi-epic PRD with cross-cutting concerns?</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Quality</th>
+<th>Cost</th>
+<th>Time</th>
+<th>Done%</th>
+<th>Cplx%</th>
+<th>JSON%</th>
+<th>Advisor Calls</th>
+<th>Overall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Haiku solo</strong></td>
+<td>95.3</td>
+<td>$0.780</td>
+<td>170.8s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>—</td>
+<td><strong>93.4 ★</strong></td>
+</tr>
+<tr>
+<td>Sonnet solo</td>
+<td>95.3</td>
+<td>$3.438</td>
+<td>495.2s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>—</td>
+<td>83.4</td>
+</tr>
+<tr>
+<td>Haiku+Sonnet adv(3)</td>
+<td>81.6</td>
+<td>$1.105</td>
+<td>523.2s</td>
+<td>100%</td>
+<td>94%</td>
+<td>94%</td>
+<td>26/41</td>
+<td>80.3</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(3)</td>
+<td>95.3</td>
+<td>$11.203</td>
+<td>483.3s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>51/68</td>
+<td>67.3</td>
+</tr>
+<tr>
+<td>Haiku+Opus adv(5)</td>
+<td>95.3</td>
+<td>$11.307</td>
+<td>480.0s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>52/68</td>
+<td>67.2</td>
+</tr>
+<tr>
+<td>Opus solo</td>
+<td>95.3</td>
+<td>$16.331</td>
+<td>467.1s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>—</td>
+<td>65.9</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(5)</td>
+<td>95.3</td>
+<td>$17.228</td>
+<td>714.0s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>55/68</td>
+<td>62.5</td>
+</tr>
+<tr>
+<td>Sonnet+Opus adv(3)</td>
+<td>95.3</td>
+<td>$17.865</td>
+<td>740.5s</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>57/68</td>
+<td>62.1</td>
+</tr>
+</tbody>
+</table>
+<p>Surprisingly, the pattern <strong>holds</strong> at scale. </p>
+<ul>
+<li>Haiku: <strong>$0.78</strong> for 95.3 quality</li>
+<li>Sonnet: $3.44 for 95.3 quality</li>
+<li>Opus: $16.33 for 95.3 quality</li>
+<li>Sonnet+Opus adv(3): $17.87 for 95.3 quality</li>
+</ul>
+<p>That's a <strong>23x cost difference</strong> between the cheapest and most expensive configurations for identical quality output.</p>
+<p>The advisor variants present their own story. This time, the executor agent asked for help most of the time, resulting in higher costs for no noticable benefit. </p>
+<p>Another interesting finding was that the haiku+sonnet pairing was the only advisor to <strong>degrade</strong> quality overall. It seems something about that pairing just doesn't work well within this framework. </p>
+<hr />
+<h2>Five Things I Learned</h2>
+<h3>1. Model selection should be complexity-routed, not uniform.</h3>
+<p>Models handle tasks differently depending on the complexity of the task, and so the model you select should change with that complexity. These are the rules I implemented in my workflow. </p>
+<table>
+<thead>
+<tr>
+<th>PRD Complexity</th>
+<th>Decompose Model</th>
+<th>Enrich Model</th>
+<th>Cost</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Simple</strong> (&lt;2K words)</td>
+<td>Haiku</td>
+<td>Haiku</td>
+<td>$0.16</td>
+<td>Haiku dominates on quality AND cost</td>
+</tr>
+<tr>
+<td><strong>Complex</strong> (&gt;2K words)</td>
+<td>Sonnet</td>
+<td>Haiku</td>
+<td>$0.34</td>
+<td>Sonnet for structure, Haiku for metadata</td>
+</tr>
+</tbody>
+</table>
+<p>When creating a system designed to scale, this complexity routing isn't optional. Not only did Haiku save money, but </p>
+<h3>2. Complex models can make the job harder</h3>
+<p>This was the most counterintuitive finding. Opus, which is Anthropic's most complex public model, consistently underperformed Sonnet and even lost to Haiku for simpler tasks on <strong>accuracy</strong> not just cost. </p>
+<ul>
+<li><strong>Simple PRDs:</strong> 3 file conflicts, narrow parallelism (width 2), $0.459</li>
+<li><strong>Complex PRDs:</strong> 16 file conflicts, longest critical path (17/27), width 3, $0.993</li>
+</ul>
+<p>Opus generates sophisticated-looking task graphs that are structurally harder to execute. More dependencies, more conflicts, less parallelism. It sees connections that simpler models miss, which could have value in specific cases. But it makes the plans harder for models to execute. </p>
+<p><strong>More capable does not mean more effective.</strong> The model that understands the most can cause more problems. </p>
+<h3>3. The advisor pattern's sweet spot is narrower than the marketing suggests.</h3>
+<p>Anthropic's published benchmarks show broad improvements on coding (SWE-bench) and browsing (BrowseComp). On task decomposition, the picture is different:</p>
+<ul>
+<li><strong>Simple PRDs:</strong> No benefit. Haiku solo already wins. Adding an advisor increases cost 13x for marginal quality improvement.</li>
+<li><strong>Complex PRDs:</strong> Advisor rescues Haiku from total failure (0 → 71.3 quality), but Sonnet solo still beats it at less than half the cost.</li>
+<li><strong>Enrichment:</strong> Pure waste. The advisor adds cost without improving the 95.3 quality ceiling — or actively degrades performance. On complex enrichment, the advisor was consulted on 84% of calls and produced zero measurable improvement at $17.87.</li>
+</ul>
+<p>The advisor pattern works when an executor encounters problems <strong>it can't recognize on its own</strong>. On well-structured tasks with clear success criteria, the executor doesn't need help — and the advisor's presence introduces noise.</p>
+<h3>4. Enrichment is a commodity — stop overspending on it.</h3>
+<p>This held across both simple and complex tasks. On simple enrichment (15 tasks), seven of eight models hit 93.0 quality. On complex enrichment (34 tasks from a multi-epic PRD), seven of eight hit 95.3.</p>
+<p>The cost spread on complex enrichment: $0.78 (Haiku) to $17.87 (Sonnet+Opus advisor). That's a <strong>23x cost difference for identical output</strong> on the same 34 tasks.</p>
+<p>Task enrichment is structured, fill-in-the-blank work. It does not require architectural reasoning. It does not benefit from deep analysis. It certainly does not benefit from a $25/MTok advisor model that gets consulted on 84% of calls and adds nothing.</p>
+<p><strong>Haiku is the only defensible choice for enrichment.</strong> Everything else is paying more for the same output.</p>
+<h3>5. The most valuable finding is what NOT to buy.</h3>
+<p>The conventional wisdom: more capable model = better output. Pay more, get more.</p>
+<p>The data says otherwise. On decomposition, Opus ($0.99) produces worse task graphs than Sonnet ($0.20). On enrichment, Opus ($3.38) produces identical output to Haiku ($0.14). The advisor pattern ($0.47-$3.62) doesn't improve on Sonnet or Haiku solo for any task type we tested.</p>
+<p>The right question isn't "which model is most capable?" It's <strong>"which model produces the best executable output for this specific task?"</strong> Those are different questions with different answers.</p>
+<hr />
+<h2>My Recommended Routing</h2>
+<p>Based on 40 benchmark runs across 8 model configurations and 4 test matrices:</p>
+<div class="codehilite"><pre><span></span><code>TASK DECOMPOSITION
+──────────────────────────────────────────
+PRD &lt; 2,000 words  →  Haiku 4.5    $0.02/run   39s
+PRD &gt; 2,000 words  →  Sonnet 4.6   $0.20/run  238s
+Never              →  Opus 4.6     (over-structures)
+Never              →  Advisor      (cost without benefit)
+
+TASK ENRICHMENT
+──────────────────────────────────────────
+All complexity     →  Haiku 4.5    $0.14/run   49s
+Never              →  Advisor      (interferes or wastes)
+Never              →  Opus/Sonnet  (24x cost, identical output)
+</code></pre></div>
+
+<p><strong>Projected savings vs. uniform Sonnet:</strong> 62% on simple PRDs, 30% on enrichment.<br />
+<strong>Projected savings vs. uniform Opus:</strong> 96% on simple PRDs, 96% on enrichment.</p>
+<hr />
+<h2>What This Means For You</h2>
+<p>If you're running Opus everywhere because "it's the best," you're likely paying 5-24x more than necessary on the majority of your pipeline. </p>
+<p>The data shows that, at least for task decomposition and enrichment, there's a quality ceiling that cheaper models already hit.</p>
+<p>I plan on testing building next, but this was a fascinating result.</p>
+<p><strong>The expensive model isn't always the best model. Sometimes it's the worst.</strong></p>
+<hr />
+<p><em>This study was conducted using my's proprietary benchmarking infrastructure, built on Loom, which is a tool that helps me manage complex projects across sessions and track ideas for future improvements.</em></p>
+<blockquote>
+<h2>Methodology Notes</h2>
+<p><strong>Benchmark infrastructure:</strong> Custom Python framework using async orchestration, Pydantic data models, and Testcontainers for isolated Postgres + Redis per run. Snapshots freeze decomposition output for independent enrichment benchmarking.</p>
+<p><strong>Advisor integration:</strong> Anthropic's <code>advisor_20260301</code> server-side tool, configured with <code>anthropic-beta: advisor-tool-2026-03-01</code> header. Advisor token usage tracked separately via <code>skill_runs</code> table metadata extraction.</p>
+<p><strong>Scoring normalization:</strong> Quality, cost, and speed are independently scored and composited (55/25/20 weighting). Cost and speed baselines are per-PRD to account for inherent complexity differences.</p>
+<p><strong>Limitations:</strong><br />
+- Two PRD fixtures (simple and complex). Results may vary on different domains or intermediate complexity.<br />
+- Single run per variant. Statistical significance requires multiple runs per configuration.<br />
+- Advisor performance on agentic coding tasks (SWE-bench-like work) was not tested and may differ significantly.</p>
+</blockquote>
+                </div>
+
+                <!-- Social Share Buttons -->
+                <div class="share-section">
+                    <h3>Share this post</h3>
+                    <div class="share-buttons">
+                        <a href="https://twitter.com/intent/tweet?text=I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.&url=https://mediumroast.dev/blog/model_testing.html" target="_blank"
+                            rel="noopener" class="share-btn share-twitter" title="Share on Twitter">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://mediumroast.dev/blog/model_testing.html" target="_blank"
+                            rel="noopener" class="share-btn share-linkedin" title="Share on LinkedIn">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                            LinkedIn
+                        </a>
+                        <a href="mailto:?subject=I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.&body=Check out this article: https://mediumroast.dev/blog/model_testing.html"
+                            class="share-btn share-email" title="Share via Email">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
+                            Email
+                        </a>
+                        <button class="share-btn share-copy" onclick="copyLink()" title="Copy link">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <script>
+                    function copyLink() {
+                        const url = window.location.href;
+                        navigator.clipboard.writeText(url).then(() => {
+                            const btn = document.querySelector('.share-copy');
+                            const originalText = btn.innerHTML;
+                            btn.innerHTML = '<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Copied!';
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                            }, 2000);
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <div id="site-footer"></div>
+    <script src="../components/footer.js"></script>
+    <script>renderFooter("..");</script>
+</body>
+
+</html>

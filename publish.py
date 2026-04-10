@@ -78,6 +78,8 @@ def main():
     raw_date = frontmatter.get('date', datetime.date.today().strftime("%Y-%m-%d"))
     tags = frontmatter.get('tags', '')
     meta_desc = frontmatter.get('meta', '')
+    crosspost = frontmatter.get('crosspost', 'false').lower() == 'true'
+    project_type = frontmatter.get('type', 'Project')
 
     # 3. Check Published Status
     # Default to True if missing (for backward compatibility)
@@ -185,6 +187,8 @@ def main():
     final_html = final_html.replace('{{date}}', formatted_date)
     final_html = final_html.replace('{{tags}}', tags)
     final_html = final_html.replace('{{meta}}', meta_desc)
+    final_html = final_html.replace('{{crosspost}}', str(crosspost).lower())
+    final_html = final_html.replace('{{project_type}}', project_type)
     final_html = final_html.replace('{{reading_time}}', str(reading_time))
     final_html = final_html.replace('{{content}}', html_content)
 

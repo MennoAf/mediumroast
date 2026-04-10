@@ -1437,6 +1437,35 @@ strong {
     color: #ff5f56;
 }
 
+/* Tables */
+.article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.95rem;
+    overflow-x: auto;
+    display: block; /* To allow scrolling on small screens */
+}
+
+.article-content th,
+.article-content td {
+    border: 1px solid var(--code-border);
+    padding: 12px 16px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.article-content th {
+    background-color: var(--code-border);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.article-content tr:nth-child(even) td {
+    background-color: rgba(127, 127, 127, 0.05);
+}
+
 /* Mobile Override for Resume Section (Must be last to override desktop grid) */
 @media (max-width: 768px) {
     .resume-grid {

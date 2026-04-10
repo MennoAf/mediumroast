@@ -25,24 +25,27 @@
 
     <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
 
-    <section class="code-section">
+    <section class="work-section">
         <div class="container">
-            <div class="code-editor">
-                <div class="editor-header">
+            <h1 style="margin-bottom: 2rem;">Work & Research</h1>
+            <div id="crosspost-container">
+                <!-- CROSSPOST_START -->
+
+            <div class="project-card code-editor" style="margin-bottom: 2rem;">
+                <div class="editor-header" style="display: flex; align-items: center;">
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
-                    <span class="filename">work_in_progress.py</span>
+                    <span class="filename" style="margin-left: 10px; font-size: 0.85rem; font-family: 'Fira Code', monospace;">Research</span>
+                    <span style="margin-left: auto; font-size: 0.85rem; color: var(--text-secondary);">April 09, 2026</span>
                 </div>
-                <div class="editor-content">
-                    <pre><code class="language-python"><span class="keyword">try</span>:
-    <span class="function">display_projects</span>()
-<span class="keyword">except</span> <span class="error">ConstructionError</span>:
-    <span class="comment"># Something Cool Will Go here</span>
-    <span class="comment"># Check back soon...</span>
-    <span class="keyword">pass</span>
-</code></pre>
+                <div class="editor-content" style="padding: 1.5rem; background: var(--bg-card);">
+                    <h2 style="margin-top: 0; margin-bottom: 1rem;"><a href="blog/model_testing.html" style="color: inherit; text-decoration: none;">I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.</a></h2>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">Anthropic's Advisor Strategy promises near-Opus intelligence at near-Sonnet cost. A server-side tool that pairs a cheap executor model with an expensive advisor. </p>
+                    <a href="blog/model_testing.html" class="read-more" style="color: var(--accent-color); text-decoration: none; font-weight: 600; font-family: 'Fira Code', monospace; display: inline-block;">View Details &rarr;</a>
                 </div>
+            </div>
+                <!-- END_CROSSPOST -->
             </div>
         </div>
     </section>

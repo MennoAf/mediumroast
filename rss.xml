@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://mediumroast.dev/rss.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.</title>
+      <link>https://mediumroast.dev/blog/model_testing.html</link>
+      <description>Anthropic's Advisor Strategy promises near-Opus intelligence at near-Sonnet cost. A server-side tool that pairs a cheap executor model with an expensive advisor. </description>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://mediumroast.dev/blog/model_testing.html</guid>
+    </item>
+    <item>
       <title>Why I Started Using AI Seriously In 2026</title>
       <link>https://mediumroast.dev/blog/starting-with-ai.html</link>
       <description>I used AI for the better part of 2025 because I had to understand it for work. </description>

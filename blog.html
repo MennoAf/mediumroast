@@ -32,105 +32,73 @@
         <div class="container">
             <!-- Tag Filters -->
             <div class="tag-filters" id="tag-filters">
-                <!-- Filters will be populated dynamically -->
+                <button class="tag-filter active" data-tag="all">All</button><button class="tag-filter" data-tag="#benchmarking">#benchmarking</button><button class="tag-filter" data-tag="#cms">#cms</button><button class="tag-filter" data-tag="#coding/ai">#coding/ai</button><button class="tag-filter" data-tag="#python">#python</button><button class="tag-filter" data-tag="#webdev">#webdev</button>
             </div>
 
             <div class="blog-list" id="blog-container">
-                <!-- Posts will be loaded here dynamically -->
-                <p style="text-align: center; color: var(--text-secondary);">Loading posts...</p>
+            <article class="blog-post" data-date="2026-04-09" data-tags="#coding/ai #benchmarking">
+                <h2><a href="blog/model_testing.html" style="color: inherit;">I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">April 09, 2026</span>
+                    <span class="post-reading-time">14 min read</span>
+                    <span class="post-tags"><span class="tag-label">#coding/ai</span> <span class="tag-label">#benchmarking</span></span>
+                </div>
+                <div class="post-content">
+                    <p>Anthropic's Advisor Strategy promises near-Opus intelligence at near-Sonnet cost. A server-side tool that pairs a cheap executor model with an expensive advisor. </p>
+                    <a href="blog/model_testing.html" class="read-more">Read Article &rarr;</a>
+                </div>
+            </article>
+            <article class="blog-post" data-date="2026-01-25" data-tags="">
+                <h2><a href="blog/starting-with-ai.html" style="color: inherit;">Why I Started Using AI Seriously In 2026</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">January 25, 2026</span>
+                    <span class="post-reading-time">12 min read</span>
+                    <span class="post-tags"></span>
+                </div>
+                <div class="post-content">
+                    <p>I used AI for the better part of 2025 because I had to understand it for work. </p>
+                    <a href="blog/starting-with-ai.html" class="read-more">Read Article &rarr;</a>
+                </div>
+            </article>
+            <article class="blog-post" data-date="2026-01-25" data-tags="#cms #python #webdev">
+                <h2><a href="blog/making_a_cms.html" style="color: inherit;">Making a CMS</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">January 25, 2026</span>
+                    <span class="post-reading-time">1 min read</span>
+                    <span class="post-tags"><span class="tag-label">#cms</span> <span class="tag-label">#python</span> <span class="tag-label">#webdev</span></span>
+                </div>
+                <div class="post-content">
+                    <p>I was recently watching a video about vibecoding where they said that you really needed to use a model for a year before you got to the point where you could trust it. </p>
+                    <a href="blog/making_a_cms.html" class="read-more">Read Article &rarr;</a>
+                </div>
+            </article>
             </div>
         </div>
     </section>
 
-    <!-- Dynamic Blog Loader -->
-    <!-- Load data file as a script variable to avoid CORS on local file:// execution -->
-    <script src="blog_posts.js"></script>
+    <!-- Progressive enhancement: tag filtering via JS -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const container = document.getElementById('blog-container');
-            const filtersContainer = document.getElementById('tag-filters');
+            const posts = container.querySelectorAll('.blog-post');
 
-            // Data is loaded from blog_posts.js into window.BLOG_POSTS
-            const posts = window.BLOG_POSTS || [];
+            document.querySelectorAll('.tag-filter').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
 
-            container.innerHTML = ''; // Clear loading message
-
-            if (posts.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No posts found.</p>';
-                return;
-            }
-
-            // Extract unique tags
-            const allTags = new Set();
-            posts.forEach(post => {
-                if (post.tags) {
-                    // Split tags by spaces and hashtags
-                    const tags = post.tags.split(/\s+/).filter(tag => tag.startsWith('#'));
-                    tags.forEach(tag => allTags.add(tag));
-                }
-            });
-
-            // Create filter buttons
-            if (allTags.size > 0) {
-                const filterHTML = '<button class="tag-filter active" data-tag="all">All</button>' +
-                    Array.from(allTags).map(tag =>
-                        `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
-                    ).join('');
-                filtersContainer.innerHTML = filterHTML;
-
-                // Add click handlers
-                document.querySelectorAll('.tag-filter').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        // Update active state
-                        document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-
-                        const selectedTag = this.getAttribute('data-tag');
-                        filterPosts(selectedTag);
+                    const selectedTag = this.getAttribute('data-tag');
+                    posts.forEach(post => {
+                        if (selectedTag === 'all' || (post.dataset.tags && post.dataset.tags.includes(selectedTag))) {
+                            post.style.display = '';
+                        } else {
+                            post.style.display = 'none';
+                        }
                     });
                 });
-            }
-
-            function renderPosts(postsToRender) {
-                container.innerHTML = '';
-                postsToRender.forEach(post => {
-                    const article = document.createElement('article');
-                    article.className = 'blog-post';
-                    article.setAttribute('data-date', post.iso_date);
-
-                    // Create HTML structure for the post
-                    article.innerHTML = `
-                        <h2><a href="blog/${post.filename}" style="color: inherit;">${post.title}</a></h2>
-                        <div class="post-meta">
-                            <span class="post-date">${post.date}</span>
-                            <span class="post-reading-time">${post.reading_time} min read</span>
-                            <span class="post-tags">${post.tags}</span>
-                        </div>
-                        <div class="post-content">
-                            <p>${post.summary}</p>
-                            <a href="blog/${post.filename}" class="read-more">Read Article &rarr;</a>
-                        </div>
-                    `;
-
-                    container.appendChild(article);
-                });
-            }
-
-            function filterPosts(tag) {
-                if (tag === 'all') {
-                    renderPosts(posts);
-                } else {
-                    const filtered = posts.filter(post => post.tags && post.tags.includes(tag));
-                    renderPosts(filtered);
-                }
-            }
-
-            // Initial render
-            renderPosts(posts);
+            });
         });
     </script>
-    </div>
-    </section>
 
     <div id="site-footer"></div>
     <script src="components/footer.js"></script>

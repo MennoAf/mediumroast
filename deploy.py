@@ -141,6 +141,11 @@ def main():
     print("Refreshing blog_posts.js...")
     subprocess.run(["python3", "generate_manifest.py"])
 
+    # Check for any uncommitted changes in the repo
+    git_status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+    if git_status.stdout.strip():
+        changes_made = True
+
     # 3. Git Commit and Push
     if changes_made:
         print("Committing and pushing changes...")
