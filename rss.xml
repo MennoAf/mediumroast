@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://mediumroast.dev/rss.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>My Memory System Cheated To Beat LongMemEval Until I Fixed It</title>
+      <link>https://mediumroast.dev/blog/we-were-not-beating-longmemeval.html</link>
+      <description>Last week I ran Weft, my homegrown memory layer, through LongMemEval and it scored 69.0% overall, 72.1% task-averaged. I was pleased. I shouldn't have been. The number was a lie, and the system that produced it was destroying the test data and calling it a win.</description>
+      <pubDate>Sun, 03 May 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://mediumroast.dev/blog/we-were-not-beating-longmemeval.html</guid>
+    </item>
+    <item>
       <title>I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.</title>
       <link>https://mediumroast.dev/blog/model_testing.html</link>
       <description>Anthropic's Advisor Strategy promises near-Opus intelligence at near-Sonnet cost. A server-side tool that pairs a cheap executor model with an expensive advisor. </description>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Memory System Cheated To Beat LongMemEval Until I Fixed It | _mediumroast</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="description" content="Rethinking how to build a memory system that works when you need it.">
+    <meta name="crosspost" content="true">
+    <meta name="project_type" content="Development">
+    <link rel="canonical" href="https://mediumroast.dev/blog/we-were-not-beating-longmemeval.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css?v=1.1">
+
+    <!-- Mermaid.js for diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+
+    <!-- Analytics -->
+    <script defer data-domain="mediumroast.dev" src="https://plausible.io/js/script.js"></script>
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+    <script src="../components/header.js"></script>
+    <script>renderHeader('..');</script>
+
+    <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-article">
+                <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+
+                <h1 class="article-title">My Memory System Cheated To Beat LongMemEval Until I Fixed It</h1>
+                <div class="post-meta">
+                    <span class="post-date">May 03, 2026</span>
+                    <span class="post-reading-time">9 min read</span>
+                    <span class="post-tags">#coding/ai #memory</span>
+                </div>
+
+                <div class="article-content">
+                    <p>Last week I ran Weft, my homegrown memory layer, through LongMemEval and it scored 69.0% overall, 72.1% task-averaged. I was pleased. I shouldn't have been. The number was a lie, and the system that produced it was destroying the test data and calling it a win.</p>
+<p>Here's how I found out.</p>
+<p>I didn't design Weft for LongMemEval, or even for chat-shaped agents. I built it to remember behaviors and patterns across my coding sessions — preferences, anti-patterns, decisions — extracted and stored semantically so the agent can recall them later without knowing exactly when or how they were saved.</p>
+<p>In the past few weeks I've started extending the platform because I'm building a chat-shaped agent and I want it to have persistent memory. I wanted to see how the existing belief-tier extraction held up against a standard benchmark. LongMemEval-Oracle was the first test: each question only sees its gold sessions, no distractors — easy mode.</p>
+<p>69.0% overall. Better than I expected for something I built without really knowing what an agent memory layer should contain.</p>
+<h2>The Honest Number</h2>
+<p>Shortly after this benchmark, I noticed a bug in the classifier and shipped a one-line fix. After the fix, the same harness on the same dataset scored 43.6%.</p>
+<p>The 69% had been a lie. The classifier had been silently failing on every long input — Claude was wrapping its JSON intent classification in markdown code fences, my parser was throwing on the fenced text, and the pipeline was falling back to writing the entire 12k-character session blob into a single belief-tier memory with confidence 0. </p>
+<p>Once the classifier started actually working, the system finally told me what belief-tier extraction does to chat-shaped input.</p>
+<p>It eats it. </p>
+<p>Weft wasn't beating LongMemEval; it was destroying the test data and calling it a win.</p>
+<h2>What the honest number looked like</h2>
+<div class="codehilite"><pre><span></span><code>                          before fix    after fix    Δ 
+overall                   0.690         0.436        -0.254
+task-averaged             0.721         0.420        -0.301
+
+single-session-assistant  0.875         0.161        -0.714
+single-session-preference 0.667         0.267        -0.400
+single-session-user       0.857         0.671        -0.186
+multi-session             0.602         0.459        -0.143
+knowledge-update          0.731         0.641        -0.090
+temporal-reasoning        0.594         0.323        -0.271
+</code></pre></div>
+
+<p>Turns out cheating was easy. </p>
+<p>Once the math was honest, what should be the easiest question — "what did the assistant say about X" — dropped from 87.5% to 16.1%. The most direct thing a memory system can be asked, and mine failed more than four times out of five.</p>
+<p>Why?</p>
+<p>My system took a statement and atomized it into a belief. Something basic like "user prefers Sony cameras" might be true, but without the rest of the conversation around it you don't know how true it is, or who said it, or when.</p>
+<p>When asked to recall what the user actually said, the system couldn't find it — atomization had buried the literal phrasing under its abstractions. Great for behavioral coding, where preferences and patterns are exactly what should be extracted; terrible for dialogue retrieval, where the trace itself is the answer. Wrong shape for the question.</p>
+<h2>The architectural reframe</h2>
+<p>Many memory layers assume the right thing to store is <em>what the user means</em>. You take the dialogue, run an LLM over it, extract atomized facts, and store those. The dialogue itself is a shipping container; once the cargo is unloaded, you discard it.</p>
+<p>LongMemEval's six question types disagree.</p>
+<ul>
+<li>"What's my preference for X" — semantic, fits atomized facts.</li>
+<li>"What did you tell me about X" — needs the assistant turn intact.</li>
+<li>"How many X have I mentioned" — needs enumeration across the dialogue trace.</li>
+<li>"How long between X and Y" — needs date-anchored ordering.</li>
+<li>"Has my X changed" — needs version history across sessions.</li>
+<li>"What did I tell you about X" — needs the user turn intact.</li>
+</ul>
+<p>Only "what is my preference" fits cleanly into the belief-tier shape. The other five want the dialogue trace itself: the actual turns, with their roles attached, in chronological order, with their dates intact.</p>
+<p>Ironically, Weft already had a turn tier. I'd built it into the agent runtime to log dialogue traces as they happened — a logging path in my head, not a recall path — and when I wired up the benchmark adapter, the turn tier never came up. Recall was exactly what the benchmark was asking for, and I'd had the right tool the whole time.</p>
+<h2>What the turn-tier system does</h2>
+<p>The turn-tier ingest creates one episode per haystack question and writes each conversational turn as one row in <code>episode_turns</code>, with <code>occurred_at</code> set from the session date. Each turn carries its own embedding. Recall does hybrid retrieval (vector + BM25, RRF fusion) over the turn rows directly. </p>
+<p>Multi-anchor temporal questions like "how many days between the launch and the demo" get a per-anchor split.</p>
+<p>I run a separate recall for "the launch" and "the demo," union the results, and let the Reader do the arithmetic on two grounded sets instead of one conflated pile.</p>
+<p>The idea is that now the entire conversation is available in semantic search, not just the atomized facts I extract from it.</p>
+<h2>The honest number, redone</h2>
+<div class="codehilite"><pre><span></span><code>                          honest belief    turn tier      Δ
+overall                   0.436            0.892          +0.456
+task-averaged             0.420            0.889          +0.469
+
+single-session-assistant  0.161            0.982          +0.821
+single-session-user       0.671            0.971          +0.300
+single-session-preference 0.267            0.767          +0.500
+multi-session             0.459            0.872          +0.414
+temporal-reasoning        0.323            0.872          +0.549
+knowledge-update          0.641            0.872          +0.231
+</code></pre></div>
+
+<p>Single-session-assistant: 16.1% to 98.2%. Fifty-five out of fifty-six questions correct.</p>
+<p>The system is now genuinely better. Even compared to the "cheater" run, the 89% beats 69% and it didn't depend on the parser breaking to help get better numbers. </p>
+<p>I can run the system tomorrow and get the same answer, and that answer is good.</p>
+<h2>Surviving distractors</h2>
+<p>Oracle is the easy test — each question references one to five sessions, each session has its "gold" evidence embedded somewhere inside, and the system only has to find the right turn in a small pile. But Oracle isn't the only test LongMemEval offers.</p>
+<p>LongMemEval-S takes the same 500 questions and pads each reference window (the "haystack") out with 43 distractor sessions, for 48 total. More sessions, longer sessions. Instead of searching ~600 candidate turns, the system now has roughly 12k to search through.</p>
+<p>I ran a 50% stratified sample (n=251), preserving question-type proportions. Same harness. Same prompts. Same model. Same code.</p>
+<div class="codehilite"><pre><span></span><code>                              Oracle (n=500)   S (n=251 stratified)   Δ
+overall                       0.892            0.837                   -0.055
+task-averaged                 0.889            0.857                   -0.033
+single-session-assistant      0.982            1.000                   +0.018
+single-session-user           0.971            0.943                   -0.029
+single-session-preference     0.767            0.800                   +0.033
+knowledge-update              0.872            0.846                   -0.026
+temporal-reasoning            0.872            0.791                   -0.081
+multi-session                 0.872            0.761                   -0.111
+</code></pre></div>
+
+<p>A 5.5-point overall drop across 25× more haystack content. Synthesis categories take a real hit — multi-session loses 11 points, temporal loses 8 — but even at S they're still beating the honest belief baseline on the easier Oracle test by roughly 30 points. The system isn't perfect, but it's a heck of a lot better.</p>
+<p>Single-session-assistant scored 28 out of 28 on the stratified S sample. That category does not care about distractor pressure; the dialogue trace preserves what atomization was destroying, and adding distractors does not hide it.</p>
+<p>Anyone can win on Oracle. Surviving distractors is harder and it is what makes a memory system trustworthy.</p>
+<h2>What I now believe about chat memory</h2>
+<p>Belief-tier extraction is not the right default storage shape for conversational input. </p>
+<p>Belief works for declarative facts the user states and you want to remember as facts ("I'm allergic to peanuts," "I prefer Sony cameras"). It does not work for the rest of what shows up in chat. Anything that needs the user's exact phrasing, the assistant's exact phrasing, the role attribution, the temporal ordering, the conversational continuity, or the ability to figure out time or frequency needs the exact dialogue trace. </p>
+<p>The belief tier should be a synthesis layer over the turns — conversations appended at write time, then read back later by a separate agent that synthesizes the durable facts (preferences, habits, declarative claims) into the belief tier. The system keeps the details of a conversation for when they matter and the distilled facts for when they don't.</p>
+<p>In practice, this means memories for chat-shaped agents go into <code>weft_turn_append</code> first. When a question comes in, the system tries the turn tier; if that fails, it falls back to the belief tier. The turn tier handles "what did we talk about" — recent, specific, role-attributed. The belief tier handles "what is true about this person" — durable, distilled, accumulated.</p>
+<p>I went into this testing thinking beliefs would be the primary storage shape for my agents. I had it backwards. The turns layer matters first; beliefs only come into play when the question isn't about conversation specifics. That's why belief-tier extraction works well for the behavioral coding context Weft was originally built for — coding sessions ask "what does this user prefer," not "what did the assistant say in turn 4" — and why it fell apart the moment I pointed it at chat.</p>
+<h2>What I haven't measured yet</h2>
+<p>LongMemEval-M has ~500 sessions per question — ten times S. I have not run it. I do not know what the turn tier does at that scale, and the architectural claim has a known asymptote: as the candidate pool grows, hybrid recall over a flat embedding space gets harder, and at some haystack size the candidate top-K stops containing the gold turn. Where exactly that wall sits is an open question for a follow-up.</p>
+<p>I also didn't test what happens when a conversation grows past S-sized haystacks into something larger. Aging may degrade retrieval, and my system's built-in pruning and consolidation will probably need tuning before it holds up at that scale.</p>
+<p>I have that on my roadmap, but I felt these findings were important enough to write about now.</p>
+<p>This post is not "I solved memory." This post is "I audited my own benchmark, found the abstraction was wrong, swapped the storage shape, and the honest number doubled."</p>
+<h2>How to reproduce</h2>
+<p>Note: the repo is currently private and will go public in the not-too-distant future, once I've finished a cleanup pass. Once it's available, code lives in <code>benchmarks/longmemeval/</code> in <a href="https://github.com/MennoAf/weft-memory">github.com/MennoAf/weft-memory</a>.</p>
+<p>Two commands:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># honest belief baseline (what the system did before turn tier)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>benchmarks.longmemeval.adapter<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset<span class="w"> </span>path/to/longmemeval_oracle.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mode<span class="w"> </span>extracted
+
+<span class="c1"># turn tier</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>benchmarks.longmemeval.adapter<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset<span class="w"> </span>path/to/longmemeval_oracle.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mode<span class="w"> </span>turns<span class="w"> </span>--tier<span class="w"> </span>turns
+</code></pre></div>
+
+<p>Score with:</p>
+<div class="codehilite"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>benchmarks.longmemeval.judge<span class="w"> </span>--hyp<span class="w"> </span>&lt;output.jsonl&gt;
+</code></pre></div>
+
+<p>Total reproduction cost: roughly $15 across both runs and the gpt-4o judge. Anyone can re-run, get the same numbers, and decide whether they believe me.</p>
+<p>If the lift evaporates on your reproduction, I want to know. The architectural claim is that storage shape matters more than retrieval cleverness for chat-shaped input. The largest piece of evidence I have for it is the 46-point spread between honest belief and turn tier; the next-largest is the 30-point spread that survives distractors on S.</p>
+<p>If you have a memory system that is hitting an analogous ceiling, the question to ask is what shape your dialogue is in once it's stored — atoms or trace. If it's atoms, you might be measuring something other than what you think you are.</p>
+                </div>
+
+                <!-- Social Share Buttons -->
+                <div class="share-section">
+                    <h3>Share this post</h3>
+                    <div class="share-buttons">
+                        <a href="https://twitter.com/intent/tweet?text=My Memory System Cheated To Beat LongMemEval Until I Fixed It&url=https://mediumroast.dev/blog/we-were-not-beating-longmemeval.html" target="_blank"
+                            rel="noopener" class="share-btn share-twitter" title="Share on Twitter">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://mediumroast.dev/blog/we-were-not-beating-longmemeval.html" target="_blank"
+                            rel="noopener" class="share-btn share-linkedin" title="Share on LinkedIn">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                            LinkedIn
+                        </a>
+                        <a href="mailto:?subject=My Memory System Cheated To Beat LongMemEval Until I Fixed It&body=Check out this article: https://mediumroast.dev/blog/we-were-not-beating-longmemeval.html"
+                            class="share-btn share-email" title="Share via Email">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
+                            Email
+                        </a>
+                        <button class="share-btn share-copy" onclick="copyLink()" title="Copy link">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <script>
+                    function copyLink() {
+                        const url = window.location.href;
+                        navigator.clipboard.writeText(url).then(() => {
+                            const btn = document.querySelector('.share-copy');
+                            const originalText = btn.innerHTML;
+                            btn.innerHTML = '<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Copied!';
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                            }, 2000);
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <div id="site-footer"></div>
+    <script src="../components/footer.js"></script>
+    <script>renderFooter("..");</script>
+</body>
+
+</html>
