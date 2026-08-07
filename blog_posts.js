@@ -3,7 +3,7 @@ window.BLOG_POSTS = [
         "title": "My Memory System Cheated To Beat LongMemEval Until I Fixed It",
         "date": "May 03, 2026",
         "iso_date": "2026-05-03",
-        "tags": "#coding/ai #memory",
+        "tags": "",
         "crosspost": true,
         "type": "Development",
         "summary": "Last week I ran Weft, my homegrown memory layer, through LongMemEval and it scored 69.0% overall, 72.1% task-averaged. I was pleased. I shouldn't have been. The number was a lie, and the system that produced it was destroying the test data and calling it a win.",
@@ -14,7 +14,7 @@ window.BLOG_POSTS = [
         "title": "I Benchmarked Anthropic's Advisor Strategy on Task Decomposition. The Expensive Model Was the Worst.",
         "date": "April 09, 2026",
         "iso_date": "2026-04-09",
-        "tags": "#coding/ai #benchmarking",
+        "tags": "",
         "crosspost": true,
         "type": "Research",
         "summary": "Anthropic's Advisor Strategy promises near-Opus intelligence at near-Sonnet cost. A server-side tool that pairs a cheap executor model with an expensive advisor. ",
@@ -36,11 +36,11 @@ window.BLOG_POSTS = [
         "title": "Making a CMS",
         "date": "January 25, 2026",
         "iso_date": "2026-01-25",
-        "tags": "#cms #python #webdev",
+        "tags": "",
         "crosspost": false,
         "type": "Project",
         "summary": "I was recently watching a video about vibecoding where they said that you really needed to use a model for a year before you got to the point where you could trust it. ",
-        "reading_time": 1,
+        "reading_time": 3,
         "filename": "making_a_cms.html"
     }
 ];

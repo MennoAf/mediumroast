@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import html
 from datetime import datetime
 
 BLOG_DIR = 'blog'
@@ -102,21 +103,21 @@ def generate_blog_html(posts):
         tags_html = ''
         if post['tags']:
             tag_list = post['tags'].split()
-            tags_html = ' '.join(
-                f'<span class="tag-label">{t}</span>' for t in tag_list if t.startswith('#')
+            tags_html = ''.join(
+                f'<span class="tag-label">{html.escape(t)}</span>' for t in tag_list if t.startswith('#')
             )
 
         # data-tags attribute for JS filtering
-        card = f'''            <article class="blog-post" data-date="{post['iso_date']}" data-tags="{post['tags']}">
-                <h2><a href="blog/{post['filename']}" style="color: inherit;">{post['title']}</a></h2>
+        card = f'''            <article class="blog-post" data-date="{html.escape(post['iso_date'])}" data-tags="{html.escape(post['tags'], quote=True)}">
+                <h2><a href="blog/{html.escape(post['filename'], quote=True)}">{html.escape(post['title'])}</a></h2>
                 <div class="post-meta">
-                    <span class="post-date">{post['date']}</span>
+                    <span class="post-date">{html.escape(post['date'])}</span>
                     <span class="post-reading-time">{post['reading_time']} min read</span>
-                    <span class="post-tags">{tags_html}</span>
+                    <span class="post-tags" aria-label="Tags">{tags_html}</span>
                 </div>
                 <div class="post-content">
-                    <p>{post['summary']}</p>
-                    <a href="blog/{post['filename']}" class="read-more">Read Article &rarr;</a>
+                    <p>{html.escape(post['summary'])}</p>
+                    <a href="blog/{html.escape(post['filename'], quote=True)}" class="read-more">Read Article &rarr;</a>
                 </div>
             </article>'''
         post_cards.append(card)
@@ -137,7 +138,7 @@ def generate_blog_html(posts):
         filter_buttons += f'<button class="tag-filter" data-tag="{tag}">{tag}</button>'
 
     # Build the full page
-    html = f'''<!DOCTYPE html>
+    page_html = f'''<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -212,7 +213,7 @@ def generate_blog_html(posts):
 </html>'''
 
     with open('blog.html', 'w', encoding='utf-8') as f:
-        f.write(html)
+        f.write(page_html)
 
     print("Successfully generated blog.html with static post cards.")
 
