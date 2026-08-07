@@ -17,4 +17,14 @@ Then it will update the menifest (the blogroll) as well as the XML sitemap with 
 
 Finally it will stage and commit the changes to Github, which then gets published to my website. 
 
+## Local Preview
+
+To check blog formatting changes before publishing, start a local static server from this directory:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000/blog.html` or an individual post such as `http://localhost:8000/blog/model_testing.html` in a browser. Edit `style.css`, refresh the page, and use a hard refresh if the browser is serving a cached stylesheet. Stop the server with `Ctrl+C` when finished.
+
 This is an entirely vibe coded project. I do not intend this CMS to be used for anything but this site. But if you wanna do something with it, have fun. 

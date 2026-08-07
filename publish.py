@@ -4,6 +4,7 @@ import re
 import markdown
 import datetime
 import subprocess
+import html
 
 TEMPLATE_FILE = 'blog_template.html'
 BLOG_DIR = 'blog'
@@ -132,9 +133,13 @@ def main():
     
     body_markdown = process_callouts(body_markdown)
 
-    # 4b. Convert Markdown to HTML
-    html_content = markdown.markdown(body_markdown, extensions=['fenced_code', 'codehilite', 'tables', 'nl2br'])
-    
+    # 4b. Convert Markdown to HTML. Keep paragraph spacing in CSS instead
+    # of converting every source newline to a visible <br>.
+    html_content = markdown.markdown(
+        body_markdown,
+        extensions=['fenced_code', 'codehilite', 'tables']
+    )
+
     # 4c. Post-process for Mermaid diagrams
     # Convert ```mermaid code blocks to mermaid divs
     def process_mermaid(html):
@@ -163,6 +168,15 @@ def main():
     
     html_content = process_mermaid(html_content)
 
+    # Keep wide tables readable on small screens without changing their
+    # semantic table markup.
+    html_content = re.sub(
+        r'(<table>.*?</table>)',
+        r'<div class="table-wrap">\1</div>',
+        html_content,
+        flags=re.DOTALL
+    )
+
     # 4b. Auto-rewrite image paths
     # Finds <img src="filename.jpg"> and converts to <img src="../photos/filename.jpg">
     # Ignores src starting with http, https, data:, /, or ../
@@ -182,13 +196,20 @@ def main():
     word_count = len(html_content.split())
     reading_time = max(1, round(word_count / 200))
 
-    # 6. Inject Data
-    final_html = template.replace('{{title}}', title)
-    final_html = final_html.replace('{{date}}', formatted_date)
-    final_html = final_html.replace('{{tags}}', tags)
-    final_html = final_html.replace('{{meta}}', meta_desc)
+    # 6. Inject Data. Render tags as elements so the same metadata works in
+    # the article header and in the generated blog index.
+    tag_tokens = [token for token in tags.split() if token.startswith('#')]
+    tags_html = ''.join(
+        f'<span class="tag-label">{html.escape(token)}</span>'
+        for token in tag_tokens
+    )
+
+    final_html = template.replace('{{title}}', html.escape(title))
+    final_html = final_html.replace('{{date}}', html.escape(formatted_date))
+    final_html = final_html.replace('{{tags}}', tags_html)
+    final_html = final_html.replace('{{meta}}', html.escape(meta_desc))
     final_html = final_html.replace('{{crosspost}}', str(crosspost).lower())
-    final_html = final_html.replace('{{project_type}}', project_type)
+    final_html = final_html.replace('{{project_type}}', html.escape(project_type))
     final_html = final_html.replace('{{reading_time}}', str(reading_time))
     final_html = final_html.replace('{{content}}', html_content)
 
