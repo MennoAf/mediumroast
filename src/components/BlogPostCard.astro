@@ -13,20 +13,17 @@ const { title, url, date, reading_time = 5, tags = [], summary } = Astro.props;
 const tagString = tags.join(' ');
 ---
 
-<article class="blog-post" data-tags={tagString} style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--accent-dim);">
-  <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">
-    <a href={url} style="color: inherit; text-decoration: none;">{title}</a>
-  </h2>
-  <div class="post-meta" style="display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; align-items: center; flex-wrap: wrap;">
-    <span class="post-date">{date}</span>
-    <span>&bull;</span>
-    <span class="post-reading-time">{reading_time} min read</span>
+<article class="blog-card" data-tags={tagString}>
+  <div class="card-meta">
+    <time class="meta-date">{date}</time>
+    <span class="meta-sep">&middot;</span>
+    <span class="meta-read">{reading_time} min read</span>
     {tags.length > 0 && (
       <>
-        <span>&bull;</span>
-        <div class="post-tags" style="display: flex; gap: 6px;">
+        <span class="meta-sep">&middot;</span>
+        <div class="meta-tags">
           {tags.map((tag) => (
-            <a href={`/tags/${encodeURIComponent(tag)}`} style="color: var(--accent-color); font-size: 0.8rem; font-family: var(--font-heading); text-decoration: none;">
+            <a href={`/tags/${encodeURIComponent(tag)}`} class="tag-link">
               #{tag}
             </a>
           ))}
@@ -34,12 +31,102 @@ const tagString = tags.join(' ');
       </>
     )}
   </div>
-  <div class="post-content">
-    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
-      {summary}
-    </p>
-    <a href={url} class="read-more" style="color: var(--accent-color); font-weight: 600; font-family: var(--font-heading); text-decoration: none; display: inline-block;">
-      Read Article &rarr;
+
+  <h2 class="card-title">
+    <a href={url}>{title}</a>
+  </h2>
+
+  <p class="card-summary">
+    {summary}
+  </p>
+
+  <div class="card-action">
+    <a href={url} class="read-link">
+      Read article &rarr;
     </a>
   </div>
 </article>
+
+<style>
+  .blog-card {
+    margin-bottom: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--accent-dim);
+    transition: transform 0.2s ease;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .meta-sep {
+    opacity: 0.4;
+  }
+
+  .meta-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag-link {
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  .tag-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .card-title {
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 1rem 0;
+    letter-spacing: -0.01em;
+  }
+
+  .card-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .card-title a:hover {
+    color: var(--accent-color);
+  }
+
+  .card-summary {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 0 0 1.25rem 0;
+  }
+
+  .read-link {
+    color: var(--accent-color);
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease;
+  }
+
+  .read-link:hover {
+    gap: 8px;
+  }
+</style>

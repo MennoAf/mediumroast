@@ -32,10 +32,10 @@ const { posts, tag } = Astro.props;
 <BaseLayout title={`#${tag} | _mediumroast`} description={`Articles tagged with #${tag} by Jason Bauman.`}>
   <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
 
-  <section class="blog-section" style="padding-top: 40px; padding-bottom: 80px;">
-    <div class="container">
+  <section class="blog-section" style="padding-top: 50px; padding-bottom: 90px;">
+    <div style="max-width: 820px; margin: 0 auto; padding: 0 24px;">
       <a href="/blog" class="back-link" style="color: var(--accent-color); font-family: var(--font-heading); text-decoration: none; margin-bottom: 1.5rem; display: inline-block;">
-        &larr; All Posts
+        &larr; All Thoughts
       </a>
       <h1 style="margin-bottom: 1rem;">Tag: #{tag}</h1>
       <p style="color: var(--text-secondary); margin-bottom: 2.5rem;">
