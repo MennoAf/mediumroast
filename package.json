@@ -8,6 +8,7 @@
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "sync-drafts": "node scripts/sync-drafts.js",
     "astro": "ASTRO_TELEMETRY_DISABLED=1 astro"
   },
   "dependencies": {

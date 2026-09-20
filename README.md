@@ -1,66 +1,51 @@
-# _mediumroast (Astro CMS)
+# _mediumroast
 
-A personal site, research showcase, and publication platform for Jason Bauman, converted to [Astro](https://astro.build/) with type-safe Content Collections and a modern CMS workflow.
+The repository for Jason Bauman's personal website and research publications at [mediumroast.dev](https://mediumroast.dev).
 
-## Features
+Originally built with custom Python scripts and static HTML, the site is now powered by [Astro](https://astro.build/) with type-safe Content Collections, automated RSS/sitemap feeds, and a coffee-inspired design system.
 
-- **Homepage Terminal Animation**: Iconic `$ skills --list` terminal accent with typewriter cycling through skills and a blinking amber cursor.
-- **Coffee Design System**: Coffee bean (dark mode) and coffee flower (light mode) theme toggle with zero flash of unstyled content (FOUC) and `localStorage` persistence.
-- **Content Collections (`src/content.config.ts`)**: Type-safe frontmatter schema with validation for posts, tags, dates, reading times, and project crossposting.
-- **Work & Research (`/work`)**: Automatic showcase aggregating research posts and projects with code-editor styled cards (macOS traffic-light window accents).
-- **Interactive Blog & Tag System (`/blog`)**: Instant client-side tag filtering plus dedicated `/tags/[...tag]` archive routes.
-- **RSS & Sitemap Feeds**: Auto-generated `/rss.xml` and `/sitemap-index.xml` for AI discovery and feed readers.
-- **Mermaid Diagrams & GitHub Callouts**: Native support for architecture charts and styled callout boxes.
+## Writing & Publishing Posts
 
-## Project Structure
+Published articles live in `src/content/blog/` as Markdown (`.md`) files. 
 
-```
-├── astro.config.mjs         # Astro configuration (site: 'https://mediumroast.dev')
-├── package.json             # Scripts and dependencies
-├── tsconfig.json            # TypeScript configuration
-├── public/                  # Static assets: favicon.svg, CNAME, robots.txt, photos/
-└── src/
-    ├── content.config.ts    # Content collections schema
-    ├── content/
-    │   └── blog/            # Markdown articles (*.md, *.mdx)
-    ├── components/          # Astro components (Header, Footer, ThemeToggle, etc.)
-    ├── layouts/             # BaseLayout and BlogPostLayout
-    ├── pages/               # File-based routing (index, work, about, blog, contact, tags)
-    └── styles/              # Global CSS with coffee-inspired custom properties
+You can also draft or stage posts in the `.gitignored` `drafts/` folder:
+
+```bash
+# Sync completed drafts from drafts/ into src/content/blog/
+npm run sync-drafts
 ```
 
-## Adding a New Post
+### Frontmatter Schema
 
-Create a new `.md` or `.mdx` file in `src/content/blog/`:
+Each article uses standard frontmatter:
 
 ```markdown
 ---
 title: "Your Post Title"
 date: "October 14, 2026"
-pubDate: 2026-10-14
-tags: ["ai", "architecture"]
-crosspost: true          # Set true to feature on /work
-type: "Research"         # Development, Research, or Project
-summary: "A brief summary for the blog card and RSS feed."
-reading_time: 5
-draft: false             # Set true to hide from production builds
+summary: "A crisp 1–2 sentence overview for the card, dossier, and RSS feed."
+tags: ["coding/ai", "benchmarking"]
+crosspost: true          # Set to true to feature as a tabbed console card on /work
+type: "Research"         # Optional: "Research", "Project", or "Development"
+reading_time: 5          # Optional: reading time in minutes
+draft: false             # Set true to hold as draft, false to publish
 ---
 
-Your content here...
+Your markdown content here...
 ```
 
-## Local Development
+## Commands
 
 ```bash
-# Start the local development server (with hot reload)
+# Start local development server (http://localhost:4321)
 npm run dev
 
-# Check types and content collections
+# Sync markdown files from drafts/ folder
+npm run sync-drafts
+
+# Validate types and frontmatter schemas
 npm run check
 
-# Build production static site (outputs to dist/)
+# Build production static site (dist/)
 npm run build
-
-# Preview the production build locally
-npm run preview
 ```
