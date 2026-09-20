@@ -7,49 +7,60 @@
     --bg-color: #2C211D;
     /* Deep Espresso */
     --text-primary: #EFEBE9;
-    /* Light Foam */
+    /* Light Foam (12.9:1 AAA contrast) */
     --text-secondary: #BCAAA4;
-    /* Pale Mocha */
+    /* Pale Mocha (6.8:1 AA & AAA large contrast) */
     --accent-color: #FFB300;
-    /* Vivid Amber */
-    --accent-dim: rgba(255, 179, 0, 0.1);
+    /* Vivid Amber (8.55:1 AAA contrast on #2C211D) */
+    --accent-hover: #FFC107;
+    --accent-dim: rgba(255, 179, 0, 0.12);
     /* Dim Amber */
-    --card-bg: #3E2723;
-    /* Slightly lighter espresso for cards */
+    --card-bg: rgba(24, 18, 15, 0.72);
+    /* Subtle dark glass obsidian */
+    --card-border: rgba(255, 179, 0, 0.22);
+    --card-border-hover: rgba(255, 179, 0, 0.6);
     --primary-brand: #A1887F;
     /* Aged Barrel Brown */
     --on-primary: #2C211D;
     /* Deep Espresso on primary */
 
-    /* Code Editor Colors */
-    --code-bg: #1e1e1e;
-    --code-border: rgba(255, 255, 255, 0.1);
+    /* Code Editor / Terminal Colors */
+    --code-bg: #110D0B;
+    --code-border: rgba(255, 179, 0, 0.15);
+    --terminal-bg: #110D0B;
+    --terminal-border: rgba(255, 179, 0, 0.15);
 }
 
 /* Light Mode */
 [data-theme="light"] {
     color-scheme: light;
-    /* Color Palette - Light Mode */
+    /* Color Palette - Light Mode (WCAG AA/AAA Certified) */
     --bg-color: #F8F3E8;
     /* Pale Crema */
-    --text-primary: #3E2723;
-    /* Dark Espresso */
-    --text-secondary: #6D4C41;
-    /* Medium Mocha */
-    --accent-color: #FFB300;
-    /* Vivid Amber */
-    --accent-dim: rgba(255, 179, 0, 0.15);
+    --text-primary: #2C211D;
+    /* Dark Deep Espresso (13.8:1 AAA contrast on #F8F3E8) */
+    --text-secondary: #5D4037;
+    /* Medium Mocha (8.35:1 AAA contrast on #F8F3E8) */
+    --accent-color: #92400E;
+    /* Rich Roasted Caramel Amber (6.1:1 AA contrast on #F8F3E8, 6.7:1 on #FFFFFF) */
+    --accent-hover: #78350F;
+    /* Deep Espresso Amber (8.5:1 AAA contrast) */
+    --accent-dim: rgba(146, 64, 14, 0.1);
     /* Dim Amber */
-    --card-bg: #FFFFFF;
-    /* White cards for contrast */
+    --card-bg: rgba(255, 255, 255, 0.85);
+    /* Crisp translucent white for cards */
+    --card-border: rgba(146, 64, 14, 0.22);
+    --card-border-hover: #D97706;
     --primary-brand: #795548;
     /* Deep Bourbon Brown */
     --on-primary: #F8F3E8;
     /* Pale Crema on primary */
 
-    /* Code Editor Colors */
-    --code-bg: #f5f5f5;
-    --code-border: rgba(0, 0, 0, 0.1);
+    /* Code Editor / Terminal Colors */
+    --code-bg: #1A1412;
+    --code-border: rgba(146, 64, 14, 0.22);
+    --terminal-bg: #1A1412;
+    --terminal-border: rgba(146, 64, 14, 0.22);
 }
 
 /* Fallback for browsers without theme set */

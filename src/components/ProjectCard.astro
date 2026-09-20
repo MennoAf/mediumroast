@@ -1,41 +1,445 @@
 ---
-// ProjectCard.astro
+// ProjectCard.astro - Tabbed Console Card (WKTW-style subtle glass + authentic console tab)
 interface Props {
   title: string;
-  type: string;
   date: string;
   summary: string;
   url: string;
   tags?: string[];
+  slug?: string;
+  command?: string;
+  tabLabel?: string;
+  status?: string;
+  terminalLogs?: string[];
+  readingTime?: number;
 }
 
-const { title, type, date, summary, url, tags = [] } = Astro.props;
+const {
+  title,
+  date,
+  summary,
+  url,
+  tags = [],
+  slug = '',
+  readingTime,
+  command: explicitCommand,
+  tabLabel: explicitTabLabel,
+  status: explicitStatus,
+  terminalLogs: explicitTerminalLogs,
+} = Astro.props;
+
+// Determine smart contextual defaults based on content
+const isLongMem = slug.includes('longmemeval') || title.toLowerCase().includes('longmemeval');
+const isAdvisor = slug.includes('model-testing') || title.toLowerCase().includes('advisor');
+const isCms = slug.includes('making-a-cms') || title.toLowerCase().includes('cms');
+
+const tabLabel = explicitTabLabel || (
+  isLongMem ? '[tmux:0 research/longmemeval] pid: 4821' :
+  isAdvisor ? '[tmux:1 research/advisor-bench] pid: 6109' :
+  isCms ? '[tmux:2 cms/astro-engine] pid: 2026' :
+  `[tmux:0 research/${slug || 'project'}] pid: 5410`
+);
+
+const command = explicitCommand || (
+  isLongMem ? 'python eval_weft.py --dataset=longmemeval' :
+  isAdvisor ? 'python run_advisor_bench.py' :
+  isCms ? 'astro check && astro build' :
+  `python run_eval.py --target=${slug || 'main'}`
+);
+
+const status = explicitStatus || (
+  isLongMem ? 'STATUS: COMPLETE' :
+  isAdvisor ? 'STATUS: BENCHMARK_DONE' :
+  isCms ? 'STATUS: DEPLOYED' :
+  'STATUS: READY'
+);
+
+const defaultLogs = isLongMem ? [
+  { type: 'info', text: '[INFO] Initializing Oracle evaluator' },
+  { type: 'warn', text: '[WARN] False 69.0% -> True 43.6%' },
+  { type: 'perf', text: '[PERF] Memory rot at >32k tokens' },
+  { type: 'ok', text: '[OK] Markdown fence bug resolved' },
+] : isAdvisor ? [
+  { type: 'info', text: '[INFO] Task decomposition: 42 graphs' },
+  { type: 'warn', text: '[WARN] Opus advisor: 3.4x latency' },
+  { type: 'cost', text: '[COST] +41% token spend over Sonnet' },
+  { type: 'ok', text: '[OK] Sonnet standalone won benchmark' },
+] : isCms ? [
+  { type: 'info', text: '[types] Generated 137ms' },
+  { type: 'ok', text: '[check] 0 errors, 0 warnings' },
+  { type: 'perf', text: '[build] 20 pages built in 575ms' },
+  { type: 'ok', text: '[OK] Static generation complete' },
+] : [
+  { type: 'info', text: '[INFO] Initializing environment...' },
+  { type: 'perf', text: '[EXEC] Running evaluation pipeline' },
+  { type: 'perf', text: '[PERF] Status: 200 OK' },
+  { type: 'ok', text: '[OK] Analysis complete' },
+];
+
+const terminalLogs = (explicitTerminalLogs && explicitTerminalLogs.length > 0)
+  ? explicitTerminalLogs.map((item: string) => {
+      const isOk = item.includes('[OK]') || item.includes('[DONE]') || item.includes('[PASS]');
+      const isWarn = item.includes('[WARN]') || item.includes('[DEGRADATION]');
+      const isCost = item.includes('[COST]');
+      const isInfo = item.includes('[INFO]');
+      return {
+        type: isOk ? 'ok' : isWarn ? 'warn' : isCost ? 'cost' : isInfo ? 'info' : 'perf',
+        text: item,
+      };
+    })
+  : defaultLogs;
 ---
 
-<div class="project-card code-editor" style="margin-bottom: 2rem;">
-  <div class="editor-header" style="display: flex; align-items: center;">
-    <span class="dot red"></span>
-    <span class="dot yellow"></span>
-    <span class="dot green"></span>
-    <span class="filename" style="margin-left: 10px; font-size: 0.85rem; font-family: var(--font-heading);">{type}</span>
-    <span style="margin-left: auto; font-size: 0.85rem; color: var(--text-secondary);">{date}</span>
-  </div>
-  <div class="editor-content" style="padding: 1.5rem; background: var(--card-bg);">
-    <h2 style="margin-top: 0; margin-bottom: 1rem;">
-      <a href={url} style="color: inherit; text-decoration: none;">{title}</a>
-    </h2>
-    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">{summary}</p>
-    {tags.length > 0 && (
-      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem;">
-        {tags.map((tag) => (
-          <span style="font-size: 0.75rem; font-family: var(--font-heading); color: var(--text-secondary); background: var(--accent-dim); padding: 2px 8px; border-radius: 3px;">
-            #{tag}
-          </span>
-        ))}
+<article class="tabbed-console-card group">
+  <!-- Top Tab & Shoulder -->
+  <div class="console-tab-row">
+    <div class="console-tab">
+      <span class="tab-icon" aria-hidden="true">📁</span>
+      <span class="tab-text">{tabLabel}</span>
+    </div>
+    <div class="console-shoulder">
+      <div class="status-pill">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-text">{status}</span>
       </div>
-    )}
-    <a href={url} class="read-more" style="color: var(--accent-color); text-decoration: none; font-weight: 600; font-family: var(--font-heading); display: inline-block;">
-      View Details &rarr;
-    </a>
+    </div>
   </div>
-</div>
+
+  <!-- Console Body -->
+  <div class="console-body">
+    <div class="console-grid">
+      
+      <!-- Left Editorial Column -->
+      <div class="console-editorial">
+        <h2 class="console-title">
+          <a href={url}>{title}</a>
+        </h2>
+        <p class="console-summary">{summary}</p>
+        
+        {tags.length > 0 && (
+          <div class="console-tags">
+            {tags.map((tag) => (
+              <span class="tag-pill">#{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Right Monospace Terminal Preview -->
+      <div class="console-terminal" aria-label="Terminal output preview">
+        <div class="terminal-cmd-bar">
+          <span class="prompt-symbol">$</span>
+          <span class="prompt-cmd">{command}</span>
+        </div>
+        <div class="terminal-logs">
+          {terminalLogs.map((log) => (
+            <div class={`log-line log-${log.type}`}>
+              {log.text}
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Metadata Bar -->
+    <div class="console-footer">
+      <div class="footer-meta">
+        <span>{date}</span>
+        {readingTime && <span>· {readingTime} min read</span>}
+      </div>
+      <a href={url} class="console-action">
+        <span>[ Read Research Memo</span>
+        <span class="arrow">&nearr;</span>
+        <span>]</span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .tabbed-console-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2.5rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tabbed-console-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Top Tab Row */
+  .console-tab-row {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .console-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px 8px 0 0;
+    border-top: 1px solid var(--card-border);
+    border-left: 1px solid var(--card-border);
+    border-right: 1px solid var(--card-border);
+    border-bottom: none;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    letter-spacing: 0.02em;
+    transition: border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .tab-icon {
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+
+  .console-shoulder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 0.5rem;
+    padding-right: 0.75rem;
+    border-bottom: 1px solid var(--card-border);
+    transition: border-color 0.25s ease;
+  }
+
+  /* Status Pill */
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent-color);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+    animation: statusPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes statusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+
+  /* Console Body */
+  .console-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.75rem;
+    border-left: 1px solid var(--card-border);
+    border-right: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 8px 8px 8px;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  /* Unified Hover Highlighting */
+  .tabbed-console-card:hover .console-tab,
+  .tabbed-console-card:hover .console-body {
+    border-color: var(--card-border-hover);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.32), 0 0 24px rgba(255, 179, 0, 0.06);
+  }
+
+  .tabbed-console-card:hover .console-shoulder {
+    border-color: var(--card-border-hover);
+  }
+
+  /* Responsive Grid Inside Card */
+  .console-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 860px) {
+    .console-grid {
+      grid-template-columns: 1.25fr 1fr;
+      gap: 1.75rem;
+    }
+  }
+
+  /* Left Editorial Column */
+  .console-editorial {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .console-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .console-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .console-title a:hover {
+    color: var(--accent-color);
+  }
+
+  .console-summary {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .console-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+  }
+
+  .tag-pill {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent-color);
+  }
+
+  /* Right Terminal Preview Box */
+  .console-terminal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 6px;
+    background: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+  }
+
+  .terminal-cmd-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #FBBF24;
+    font-weight: 600;
+  }
+
+  .prompt-symbol {
+    color: #F59E0B;
+    font-weight: 700;
+  }
+
+  .prompt-cmd {
+    color: #FDE68A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .terminal-logs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: 0.15rem;
+  }
+
+  .log-line {
+    font-size: 0.72rem;
+    line-height: 1.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .log-info {
+    color: #93C5FD;
+  }
+
+  .log-warn {
+    color: #FCD34D;
+  }
+
+  .log-perf {
+    color: #CBD5E1;
+  }
+
+  .log-cost {
+    color: #F472B6;
+  }
+
+  .log-ok {
+    color: #34D399;
+  }
+
+  /* Bottom Metadata Bar */
+  .console-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--card-border);
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+  }
+
+  .footer-meta {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+  }
+
+  .console-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--accent-color);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .console-action .arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .console-action:hover .arrow {
+    transform: translate(2px, -2px);
+  }
+
+  .console-action:hover {
+    text-decoration: underline;
+  }
+</style>

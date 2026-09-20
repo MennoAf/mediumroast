@@ -19,6 +19,11 @@ const blog = defineCollection({
     type: z.string().default('Project'),
     reading_time: z.number().optional(),
     draft: z.boolean().default(false),
+    command: z.string().optional(),
+    tabLabel: z.string().optional(),
+    status: z.string().optional(),
+    terminalLogs: z.array(z.string()).optional(),
+    takeaway: z.string().optional(),
   }),
 });
 

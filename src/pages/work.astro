@@ -15,22 +15,35 @@ const workPosts = (await getCollection('blog', ({ data }) => data.crosspost && !
 
 <BaseLayout title="Work & Research | _mediumroast" description="Showcase of engineering, research, and independent projects by Jason Bauman.">
 
-  <section class="work-section" style="padding-top: 40px; padding-bottom: 80px;">
+  <section class="work-section" style="padding-top: 48px; padding-bottom: 88px;">
     <div class="container">
-      <h1 style="margin-bottom: 1rem;">Work & Research</h1>
-      <p style="color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 700px; font-size: 1.05rem;">
-        Autonomous agent architectures, long-term memory evaluation, AI benchmark analysis, and production engineering notes.
-      </p>
+      <div style="margin-bottom: 3rem;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-color);"></span>
+          <span style="font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-color);">
+            Technical Dossier // Production Research
+          </span>
+        </div>
+        <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.02em;">Work & Research</h1>
+        <p style="color: var(--text-secondary); max-width: 680px; font-size: 1.05rem; line-height: 1.6;">
+          Autonomous agent architectures, long-term memory evaluation, AI benchmark analysis, and production engineering notes.
+        </p>
+      </div>
 
       <div class="projects-container">
         {workPosts.map((post) => (
           <ProjectCard
             title={post.data.title}
-            type={post.data.type}
             date={post.data.date}
             summary={post.data.summary}
             url={`/blog/${post.id}`}
             tags={post.data.tags}
+            slug={post.id}
+            readingTime={post.data.reading_time}
+            command={post.data.command}
+            tabLabel={post.data.tabLabel}
+            status={post.data.status}
+            terminalLogs={post.data.terminalLogs}
           />
         ))}
       </div>
