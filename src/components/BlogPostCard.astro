@@ -13,7 +13,7 @@ const { title, url, date, reading_time = 5, tags = [], summary } = Astro.props;
 const tagString = tags.join(' ');
 ---
 
-<article class="blog-card" data-tags={tagString}>
+<article class="blog-card group" data-tags={tagString}>
   <div class="card-meta">
     <time class="meta-date">{date}</time>
     <span class="meta-sep">&middot;</span>
@@ -23,7 +23,7 @@ const tagString = tags.join(' ');
         <span class="meta-sep">&middot;</span>
         <div class="meta-tags">
           {tags.map((tag) => (
-            <a href={`/tags/${encodeURIComponent(tag)}`} class="tag-link">
+            <a href={`/tags/${encodeURIComponent(tag)}`} class="tag-pill-link">
               #{tag}
             </a>
           ))}
@@ -42,16 +42,17 @@ const tagString = tags.join(' ');
 
   <div class="card-action">
     <a href={url} class="read-link">
-      Read article &rarr;
+      <span>Read article</span>
+      <span class="arrow">&rarr;</span>
     </a>
   </div>
 </article>
 
 <style>
   .blog-card {
-    margin-bottom: 3rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid var(--accent-dim);
+    margin-bottom: 2.75rem;
+    padding-bottom: 2.25rem;
+    border-bottom: 1px solid var(--card-border);
     transition: transform 0.2s ease;
   }
 
@@ -60,7 +61,8 @@ const tagString = tags.join(' ');
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    font-family: var(--font-heading);
     color: var(--text-secondary);
     margin-bottom: 0.75rem;
   }
@@ -75,18 +77,21 @@ const tagString = tags.join(' ');
     flex-wrap: wrap;
   }
 
-  .tag-link {
+  .tag-pill-link {
     color: var(--accent-color);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-family: var(--font-heading);
+    font-weight: 600;
     text-decoration: none;
-    opacity: 0.85;
-    transition: opacity 0.2s ease;
+    background: var(--accent-dim);
+    padding: 2px 7px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
   }
 
-  .tag-link:hover {
-    opacity: 1;
-    text-decoration: underline;
+  .tag-pill-link:hover {
+    background: var(--card-border-hover);
+    color: var(--bg-color);
   }
 
   .card-title {
@@ -117,16 +122,24 @@ const tagString = tags.join(' ');
   .read-link {
     color: var(--accent-color);
     font-family: var(--font-heading);
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.88rem;
+    font-weight: 700;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     transition: gap 0.2s ease;
   }
 
+  .read-link .arrow {
+    transition: transform 0.2s ease;
+  }
+
   .read-link:hover {
-    gap: 8px;
+    text-decoration: underline;
+  }
+
+  .read-link:hover .arrow {
+    transform: translateX(4px);
   }
 </style>

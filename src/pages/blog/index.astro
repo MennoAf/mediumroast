@@ -22,13 +22,21 @@ const allTags = Array.from(
 
   <section class="blog-section" style="padding-top: 50px; padding-bottom: 90px;">
     <div style="max-width: 820px; margin: 0 auto; padding: 0 24px;">
-      <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); margin-bottom: 0.75rem; letter-spacing: -0.02em;">Thoughts &amp; Notes</h1>
-      <p style="color: var(--text-secondary); margin-bottom: 2.5rem; font-size: 1.15rem; line-height: 1.65;">
-        Reflections on AI benchmarks, agent architecture, memory systems, and engineering reality.
-      </p>
+      <div style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-color);"></span>
+          <span style="font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-color);">
+            Archive // Writing & Notes
+          </span>
+        </div>
+        <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); margin-bottom: 0.75rem; letter-spacing: -0.02em;">Thoughts &amp; Notes</h1>
+        <p style="color: var(--text-secondary); font-size: 1.15rem; line-height: 1.65;">
+          Reflections on AI benchmarks, agent architecture, memory systems, and engineering reality.
+        </p>
+      </div>
 
-      <!-- Tag Filters -->
-      <div class="tag-filters" id="tag-filters" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.5rem;">
+      <!-- Tag Filters (Frosted Glass Pills) -->
+      <div class="tag-filters" id="tag-filters" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.75rem;">
         <button class="tag-filter active" data-tag="all">All ({allPosts.length})</button>
         {allTags.map((tag) => (
           <button class="tag-filter" data-tag={tag}>
@@ -57,7 +65,7 @@ const allTags = Array.from(
 <script>
   function setupTagFilter() {
     const filterButtons = document.querySelectorAll('.tag-filter');
-    const articles = document.querySelectorAll('.blog-post');
+    const articles = document.querySelectorAll('.blog-card');
 
     filterButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -88,25 +96,32 @@ const allTags = Array.from(
 
 <style>
   .tag-filter {
-    background: transparent;
-    border: 1px solid var(--accent-dim);
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
     color: var(--text-secondary);
     font-family: var(--font-heading);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
     padding: 6px 14px;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    border-radius: 9999px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .tag-filter:hover {
     border-color: var(--accent-color);
-    color: var(--text-primary);
+    color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--accent-dim);
   }
 
   .tag-filter.active {
     background: var(--accent-color);
     color: var(--bg-color);
     border-color: var(--accent-color);
+    box-shadow: 0 4px 14px var(--accent-dim);
+    font-weight: 700;
   }
 </style>
