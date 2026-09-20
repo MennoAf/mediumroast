@@ -1,0 +1,40 @@
+---
+// work.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const workPosts = (await getCollection('blog', ({ data }) => data.crosspost && !data.draft)).sort(
+  (a, b) => {
+    const dateA = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+    const dateB = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+    return dateB - dateA;
+  }
+);
+---
+
+<BaseLayout title="Work & Research | _mediumroast" description="Showcase of engineering, research, and independent projects by Jason Bauman.">
+  <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+  <section class="work-section" style="padding-top: 40px; padding-bottom: 80px;">
+    <div class="container">
+      <h1 style="margin-bottom: 1rem;">Work & Research</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 700px; font-size: 1.05rem;">
+        Autonomous agent architectures, long-term memory evaluation, AI benchmark analysis, and production engineering notes.
+      </p>
+
+      <div class="projects-container">
+        {workPosts.map((post) => (
+          <ProjectCard
+            title={post.data.title}
+            type={post.data.type}
+            date={post.data.date}
+            summary={post.data.summary}
+            url={`/blog/${post.id}`}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

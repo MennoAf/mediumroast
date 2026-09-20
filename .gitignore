@@ -1,5 +1,12 @@
+# Astro & build outputs
+dist/
+.astro/
+node_modules/
+.DS_Store
 
+# Legacy
 blog_ideas/
 blog_template.html
 drafts/
-__pycache__
+__pycache__/
+.worktrees/

@@ -1,0 +1,149 @@
+---
+// about.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | _mediumroast" description="About Jason Bauman — Technical Director & Maker building AI-native systems, persistent memory architectures, and search intelligence.">
+  <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+  <section id="work" class="resume-section" style="padding-top: 50px; padding-bottom: 80px;">
+    <div class="container">
+      <div class="resume-grid">
+
+        <!-- Sticky Left Sidebar: Skills Matrix -->
+        <aside class="skills-sidebar">
+          <div class="skills-category">
+            <h3>Technical</h3>
+            <ul class="skills-list">
+              <li><strong>Languages:</strong> Python, PySpark, SQL, JS/TS, Bash</li>
+              <li><strong>Cloud & Data:</strong> Databricks, Snowflake, BigQuery, Supabase, pgvector, Fly.io</li>
+              <li><strong>AI & ML:</strong> LLM orchestration, vector search, MCP, Ollama</li>
+              <li><strong>Search:</strong> Technical SEO, AEO/GEO, GA4, GSC, Ahrefs</li>
+            </ul>
+          </div>
+
+          <div class="skills-category" style="margin-top: 2rem;">
+            <h3>Independent Projects</h3>
+          </div>
+
+          <div class="skills-category" style="margin-top: 1rem;">
+            <h4 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.5rem;">Loom — Multi-Agent Orchestration</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              A project execution framework built on PostgreSQL and Redis that decomposes PRDs into discrete tasks wired by prerequisites. Uses a Python daemon and a "Weaver" mode with isolated Docker containers for fully autonomous execution loops.
+            </p>
+          </div>
+
+          <div class="skills-category">
+            <h4 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.5rem;">Weft — Persistent Memory System</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              A 34-tool memory architecture built on Supabase and Fly.io with pgvector. Enables AI assistants to maintain context, recall prior decisions, and surface relevant history across sessions using hybrid search and relationship graphs.
+            </p>
+          </div>
+
+          <div class="skills-category">
+            <h4 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 0.5rem;">LLM Cost Routing Architecture</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              A tiered inference routing system minimizing unnecessary LLM calls. Projected to run a persistent AI assistant for $8–12/month.
+            </p>
+          </div>
+        </aside>
+
+        <!-- Right Column: Timeline & Experience -->
+        <div class="experience-timeline">
+
+          <div class="summary-card">
+            <h2 class="section-title" style="font-size: 1.5rem; border: none; padding: 0; margin-bottom: 10px;">
+              Professional Summary
+            </h2>
+            <p style="color: var(--text-secondary); line-height: 1.7;">
+              Marketing technologist building AI-native systems for search, content, and audience intelligence. A decade in technical SEO gave me the engineering instincts — Python pipelines, data architecture, large-scale site optimization — and a front-row seat to the tectonic shift underway: the transition from ranking-based discovery to AI-mediated retrieval. I build the infrastructure for what comes next.
+            </p>
+          </div>
+
+          <h2 class="section-title">Experience</h2>
+
+          <!-- Publicis Health Media: Director -->
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Director, Technical Strategy</h3>
+              <div class="timeline-company">Publicis Health Media | Philadelphia, PA</div>
+              <span class="timeline-date">Late 2025 – Present</span>
+            </div>
+            <div class="timeline-content">
+              <ul>
+                <li>Architecting the AI/ML integration roadmap for organic search — transitioning teams from manual optimization to model-driven strategy and automated analysis pipelines.</li>
+                <li>Building custom Python tooling and PySpark pipelines in Databricks for predictive search intelligence, automated funnel analysis, and cross-platform data unification.</li>
+                <li>Leading organizational shift toward AI-first search environments, including answer engine optimization (AEO) frameworks and LLM-citability strategy.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Publicis Health Media: Associate Director -->
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Associate Director, Technical SEO</h3>
+              <div class="timeline-company">Publicis Health Media</div>
+              <span class="timeline-date">July 2019 – Late 2025</span>
+            </div>
+            <div class="timeline-content">
+              <ul>
+                <li>Technical lead across 94+ pharmaceutical and healthcare domains — architecture, crawl optimization, Core Web Vitals, and structured data at enterprise scale.</li>
+                <li>Engineered data pipelines and automated reporting frameworks that drove a <strong>31% increase in organic traffic</strong> across the portfolio in 6 months.</li>
+                <li>Reduced average CPC by <strong>55%</strong> through technical performance optimization; cut customer acquisition cost by <strong>75%+</strong> via integrated intelligence.</li>
+                <li>Built Python-based keyword classification and search intent models, replacing manual categorization with ML-driven taxonomy at scale.</li>
+                <li>Managed direct reports; contributed to firm-wide DEI council.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Console And Associates -->
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <h3 class="timeline-role">SEO Specialist</h3>
+              <div class="timeline-company">Console And Associates | Marlton, NJ</div>
+              <span class="timeline-date">Nov 2017 – June 2019</span>
+            </div>
+            <div class="timeline-content">
+              <ul>
+                <li>Built automated KPI reporting framework; increased organic leads <strong>20% YoY</strong> through technical and content optimization.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Trinity Insight -->
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Senior SEO Associate</h3>
+              <div class="timeline-company">Trinity Insight | Philadelphia, PA</div>
+              <span class="timeline-date">2014 – 2017</span>
+            </div>
+            <div class="timeline-content">
+              <ul>
+                <li>Primary specialist for retail & financial clients executing onsite/offsite SEO.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h2 class="section-title">Writing</h2>
+          <div class="timeline-item">
+            <div class="timeline-content" style="padding-left: 0;">
+              <p style="color: var(--text-secondary); line-height: 1.6;">
+                I write about the shift from traditional search optimization to AI-mediated discovery — what it means for marketing strategy, how organizations should prepare, and what's hype versus what's structural. Published on this site and LinkedIn.
+              </p>
+            </div>
+          </div>
+
+          <h2 class="section-title">Education</h2>
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Bachelor of Science in Marketing</h3>
+              <div class="timeline-company">Indiana Wesleyan University</div>
+              <span class="timeline-date">Minor in Writing</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

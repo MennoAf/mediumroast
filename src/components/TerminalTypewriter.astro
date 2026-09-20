@@ -1,0 +1,76 @@
+---
+// TerminalTypewriter.astro
+interface Props {
+  phrases?: string[];
+  command?: string;
+}
+
+const {
+  phrases = [
+    "SEO Strategy",
+    "Data Engineering",
+    "AI Automation",
+    "Miniature Painting",
+    "Team Leadership",
+    "Python / PySpark",
+    "Coffee Making"
+  ],
+  command = "skills --list"
+} = Astro.props;
+---
+
+<div class="terminal-accent">
+  <span style="color: var(--accent-color)">$</span> {command}<br>
+  <span id="typewriter">{phrases[0]}</span><span class="cursor"></span>
+</div>
+
+<script define:vars={{ phrases }}>
+  function initTypewriter() {
+    const textElement = document.getElementById('typewriter');
+    if (!textElement) return;
+
+    let phraseIndex = 0;
+    let charIndex = phrases[0] ? phrases[0].length : 0;
+    let isDeleting = true; // start by pausing on initial phrase, then backspacing
+    let typeSpeed = 2000;
+
+    let timeoutId;
+
+    function type() {
+      const currentPhrase = phrases[phraseIndex];
+      if (!currentPhrase) return;
+
+      if (isDeleting) {
+        textElement.innerText = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+        typeSpeed = 50;
+      } else {
+        textElement.innerText = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+        typeSpeed = 100;
+      }
+
+      if (!isDeleting && charIndex === currentPhrase.length) {
+        isDeleting = true;
+        typeSpeed = 2000; // Pause at end
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        typeSpeed = 500; // Pause before next word
+      }
+
+      timeoutId = setTimeout(type, typeSpeed);
+    }
+
+    timeoutId = setTimeout(type, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTypewriter);
+  } else {
+    initTypewriter();
+  }
+  document.addEventListener('astro:page-load', initTypewriter);
+</script>

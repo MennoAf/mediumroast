@@ -1,30 +1,66 @@
-# _mediumroast CMS
+# _mediumroast (Astro CMS)
 
-This  is an attempt at getting better at vibe coding. 
+A personal site, research showcase, and publication platform for Jason Bauman, converted to [Astro](https://astro.build/) with type-safe Content Collections and a modern CMS workflow.
 
-I wanted to set up my own CMS for my site because I wanted something simple, but the theme confusion with HUGO was frustrating me and I didn't need anything more than a basic (ish) site.
+## Features
 
-## Capabilities
-* The Generic pages (index, about,work, contact) are all static HTML pages
-* The blog page updates to show a list of blog posts in order by publish date (newest first)
-* The actual blog is fun. It will take markdown files in a .gitignore draft folder and IF the frontmater is marked "publish" will convert it to HTML
-    * This should also include images, but that is a work in progress
- 
-## How Updating Works
-There are python scripts. If you select "Deploy.py" the script will look in your drafts folder, convert any of the blogs there to HTML it needs to. 
+- **Homepage Terminal Animation**: Iconic `$ skills --list` terminal accent with typewriter cycling through skills and a blinking amber cursor.
+- **Coffee Design System**: Coffee bean (dark mode) and coffee flower (light mode) theme toggle with zero flash of unstyled content (FOUC) and `localStorage` persistence.
+- **Content Collections (`src/content.config.ts`)**: Type-safe frontmatter schema with validation for posts, tags, dates, reading times, and project crossposting.
+- **Work & Research (`/work`)**: Automatic showcase aggregating research posts and projects with code-editor styled cards (macOS traffic-light window accents).
+- **Interactive Blog & Tag System (`/blog`)**: Instant client-side tag filtering plus dedicated `/tags/[...tag]` archive routes.
+- **RSS & Sitemap Feeds**: Auto-generated `/rss.xml` and `/sitemap-index.xml` for AI discovery and feed readers.
+- **Mermaid Diagrams & GitHub Callouts**: Native support for architecture charts and styled callout boxes.
 
-Then it will update the menifest (the blogroll) as well as the XML sitemap with the new content
+## Project Structure
 
-Finally it will stage and commit the changes to Github, which then gets published to my website. 
-
-## Local Preview
-
-To check blog formatting changes before publishing, start a local static server from this directory:
-
-```bash
-python3 -m http.server 8000
+```
+├── astro.config.mjs         # Astro configuration (site: 'https://mediumroast.dev')
+├── package.json             # Scripts and dependencies
+├── tsconfig.json            # TypeScript configuration
+├── public/                  # Static assets: favicon.svg, CNAME, robots.txt, photos/
+└── src/
+    ├── content.config.ts    # Content collections schema
+    ├── content/
+    │   └── blog/            # Markdown articles (*.md, *.mdx)
+    ├── components/          # Astro components (Header, Footer, ThemeToggle, etc.)
+    ├── layouts/             # BaseLayout and BlogPostLayout
+    ├── pages/               # File-based routing (index, work, about, blog, contact, tags)
+    └── styles/              # Global CSS with coffee-inspired custom properties
 ```
 
-Then open `http://localhost:8000/blog.html` or an individual post such as `http://localhost:8000/blog/model_testing.html` in a browser. Edit `style.css`, refresh the page, and use a hard refresh if the browser is serving a cached stylesheet. Stop the server with `Ctrl+C` when finished.
+## Adding a New Post
 
-This is an entirely vibe coded project. I do not intend this CMS to be used for anything but this site. But if you wanna do something with it, have fun. 
+Create a new `.md` or `.mdx` file in `src/content/blog/`:
+
+```markdown
+---
+title: "Your Post Title"
+date: "October 14, 2026"
+pubDate: 2026-10-14
+tags: ["ai", "architecture"]
+crosspost: true          # Set true to feature on /work
+type: "Research"         # Development, Research, or Project
+summary: "A brief summary for the blog card and RSS feed."
+reading_time: 5
+draft: false             # Set true to hide from production builds
+---
+
+Your content here...
+```
+
+## Local Development
+
+```bash
+# Start the local development server (with hot reload)
+npm run dev
+
+# Check types and content collections
+npm run check
+
+# Build production static site (outputs to dist/)
+npm run build
+
+# Preview the production build locally
+npm run preview
+```

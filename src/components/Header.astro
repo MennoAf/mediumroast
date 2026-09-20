@@ -1,0 +1,46 @@
+---
+// Header.astro
+import ThemeToggle from './ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+
+const isWork = currentPath.startsWith('/work');
+const isAbout = currentPath.startsWith('/about');
+const isBlog = currentPath.startsWith('/blog') || currentPath.startsWith('/tags');
+const isContact = currentPath.startsWith('/contact');
+---
+
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <a href="/" style="color: inherit;">
+          <span style="color: var(--accent-color)">&gt;</span> _mediumroast
+        </a>
+      </div>
+      <button class="mobile-menu-btn" aria-label="Toggle Menu">
+        ☰
+      </button>
+      <div class="nav-links">
+        <a href="/work" class={isWork ? 'active' : ''}>Work</a>
+        <a href="/about" class={isAbout ? 'active' : ''}>About</a>
+        <a href="/blog" class={isBlog ? 'active' : ''}>Blog</a>
+        <a href="/contact" class={isContact ? 'active' : ''}>Contact</a>
+        <ThemeToggle />
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function setupMobileMenu() {
+    const btn = document.querySelector('.mobile-menu-btn');
+    const nav = document.querySelector('.nav-links');
+    if (btn && nav) {
+      btn.addEventListener('click', () => nav.classList.toggle('active'));
+    }
+  }
+
+  setupMobileMenu();
+  document.addEventListener('astro:page-load', setupMobileMenu);
+</script>

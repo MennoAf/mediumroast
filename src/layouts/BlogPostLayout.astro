@@ -1,0 +1,110 @@
+---
+// BlogPostLayout.astro
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  summary: string;
+  date: string;
+  reading_time?: number;
+  tags?: string[];
+  type?: string;
+  hasMermaid?: boolean;
+}
+
+const {
+  title,
+  summary,
+  date,
+  reading_time = 5,
+  tags = [],
+  type = "Project",
+  hasMermaid = true,
+} = Astro.props;
+
+const pageTitle = `${title} | _mediumroast`;
+const currentUrl = Astro.url.href;
+const encodedTitle = encodeURIComponent(title);
+const encodedUrl = encodeURIComponent(currentUrl);
+---
+
+<BaseLayout title={pageTitle} description={summary} canonicalURL={currentUrl}>
+  <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+  <section class="blog-section">
+    <div class="container">
+      <div class="blog-article">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+
+        <h1 class="article-title" style="margin-top: 1rem; margin-bottom: 0.75rem; font-size: 2.2rem; line-height: 1.2;">
+          {title}
+        </h1>
+
+        <div class="post-meta" style="display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2rem; align-items: center; flex-wrap: wrap;">
+          <span class="post-date">{date}</span>
+          <span>&bull;</span>
+          <span class="post-reading-time">{reading_time} min read</span>
+          <span>&bull;</span>
+          <span class="post-type" style="font-family: var(--font-heading); color: var(--accent-color);">{type}</span>
+          {tags.length > 0 && (
+            <>
+              <span>&bull;</span>
+              <div class="post-tags" style="display: flex; gap: 6px;">
+                {tags.map((tag) => (
+                  <a href={`/tags/${encodeURIComponent(tag)}`} style="color: var(--accent-color); font-size: 0.8rem; font-family: var(--font-heading); text-decoration: none;">
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div class="article-content">
+          <slot />
+        </div>
+
+        <!-- Social Share Section -->
+        <div class="share-section" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--accent-dim);">
+          <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Share this post</h3>
+          <div class="share-buttons" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn"
+              style="font-size: 0.8rem; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px;"
+            >
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              X / Twitter
+            </a>
+
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn"
+              style="font-size: 0.8rem; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px;"
+            >
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+              </svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mermaid Support -->
+  {hasMermaid && (
+    <script type="module" is:inline>
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      mermaid.initialize({ startOnLoad: true, theme: isDark ? 'dark' : 'default' });
+    </script>
+  )}
+</BaseLayout>

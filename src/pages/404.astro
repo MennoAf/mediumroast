@@ -1,0 +1,49 @@
+---
+// 404.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 — Refill Needed | _mediumroast" description="Page not found. Looks like you need a refill.">
+  <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+  <section style="min-height: calc(100vh - 200px); display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 20px;">
+    <div class="error-container" style="max-width: 600px; padding: 2rem;">
+      <!-- Broken/Empty Cup SVG -->
+      <svg class="error-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 200px; height: 200px; margin-bottom: 2rem;">
+        <g transform="translate(96, 128)">
+          <!-- Cup Body -->
+          <path
+            d="M32,0 H288 A16,16 0 0 1 304,16 V144 A144,144 0 0 1 160,288 H160 A144,144 0 0 1 16,144 V16 A16,16 0 0 1 32,0 Z"
+            fill="none" stroke="var(--accent-color)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"
+          />
+          <!-- Handle -->
+          <path
+            d="M304,64 H320 A64,64 0 0 1 384,128 V128 A64,64 0 0 1 320,192 H304"
+            fill="none" stroke="var(--accent-color)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"
+          />
+          <!-- Crack -->
+          <path
+            d="M100,20 L130,80 L110,140 L150,220"
+            fill="none" stroke="var(--accent-color)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"
+          />
+        </g>
+      </svg>
+
+      <h1 style="font-size: 2.2rem; margin-bottom: 1rem;">Looks like you need a refill</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.2rem;">
+        This page is empty or has moved.
+      </p>
+
+      <a href="/" class="btn btn-primary">Take me home</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .error-svg {
+    transition: transform 0.3s ease;
+  }
+  .error-svg:hover {
+    transform: rotate(5deg);
+  }
+</style>

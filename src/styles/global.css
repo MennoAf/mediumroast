@@ -2,6 +2,7 @@
 
 /* Dark Mode (Default) */
 [data-theme="dark"] {
+    color-scheme: dark;
     /* Color Palette - Dark Mode */
     --bg-color: #2C211D;
     /* Deep Espresso */
@@ -27,6 +28,7 @@
 
 /* Light Mode */
 [data-theme="light"] {
+    color-scheme: light;
     /* Color Palette - Light Mode */
     --bg-color: #F8F3E8;
     /* Pale Crema */
@@ -52,6 +54,7 @@
 
 /* Fallback for browsers without theme set */
 :root {
+    color-scheme: light dark;
     /* Typography */
     --font-heading: 'Fira Code', monospace;
     --font-body: 'Inter', sans-serif;

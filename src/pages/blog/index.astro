@@ -1,0 +1,113 @@
+---
+// blog/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => {
+    const dateA = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+    const dateB = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+    return dateB - dateA;
+  }
+);
+
+// Collect unique tags
+const allTags = Array.from(
+  new Set(allPosts.flatMap((post) => post.data.tags || []))
+).sort();
+---
+
+<BaseLayout title="Blog | _mediumroast" description="Articles and thoughts on autonomous agents, AI evaluation, technical SEO, and engineering systems.">
+  <div style="height: 80px;"></div> <!-- Spacer for fixed header -->
+
+  <section class="blog-section" style="padding-top: 40px; padding-bottom: 80px;">
+    <div class="container">
+      <h1 style="margin-bottom: 1rem;">Thoughts & Notes</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 700px; font-size: 1.05rem;">
+        Reflections on AI benchmarks, agent architecture, vibecoding, and data systems.
+      </p>
+
+      <!-- Tag Filters -->
+      <div class="tag-filters" id="tag-filters" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.5rem;">
+        <button class="tag-filter active" data-tag="all">All ({allPosts.length})</button>
+        {allTags.map((tag) => (
+          <button class="tag-filter" data-tag={tag}>
+            #{tag}
+          </button>
+        ))}
+      </div>
+
+      <!-- Blog Posts List -->
+      <div class="blog-list" id="blog-container">
+        {allPosts.map((post) => (
+          <BlogPostCard
+            title={post.data.title}
+            url={`/blog/${post.id}`}
+            date={post.data.date}
+            reading_time={post.data.reading_time}
+            tags={post.data.tags}
+            summary={post.data.summary}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  function setupTagFilter() {
+    const filterButtons = document.querySelectorAll('.tag-filter');
+    const articles = document.querySelectorAll('.blog-post');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tag = btn.getAttribute('data-tag');
+
+        filterButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        articles.forEach((article) => {
+          if (tag === 'all') {
+            (article as HTMLElement).style.display = 'block';
+          } else {
+            const articleTags = (article.getAttribute('data-tags') || '').split(' ');
+            if (articleTags.includes(tag || '')) {
+              (article as HTMLElement).style.display = 'block';
+            } else {
+              (article as HTMLElement).style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  }
+
+  setupTagFilter();
+  document.addEventListener('astro:page-load', setupTagFilter);
+</script>
+
+<style>
+  .tag-filter {
+    background: transparent;
+    border: 1px solid var(--accent-dim);
+    color: var(--text-secondary);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .tag-filter:hover {
+    border-color: var(--accent-color);
+    color: var(--text-primary);
+  }
+
+  .tag-filter.active {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+  }
+</style>
