@@ -42,7 +42,7 @@ const encodedUrl = encodeURIComponent(currentUrl);
     </nav>
 
     <!-- Header Section (Blends into background) -->
-    <header class="article-header">
+    <div class="article-header">
       <div class="eyebrow">
         <a href="/blog" class="eyebrow-tag">Thoughts</a>
         <span class="eyebrow-sep">&rsaquo;</span>
@@ -73,7 +73,7 @@ const encodedUrl = encodeURIComponent(currentUrl);
           </div>
         )}
       </div>
-    </header>
+    </div>
 
     <!-- Article Content (Prose) -->
     <article class="prose-content">
@@ -175,7 +175,7 @@ const encodedUrl = encodeURIComponent(currentUrl);
   .article-wrapper {
     max-width: 820px;
     margin: 0 auto;
-    padding: 100px 24px 80px 24px;
+    padding: 2.5rem 24px 80px 24px;
     background: transparent;
   }
 
@@ -257,6 +257,9 @@ const encodedUrl = encodeURIComponent(currentUrl);
     letter-spacing: -0.02em;
     color: var(--text-primary);
     margin: 0 0 1.5rem 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   .article-lead {
